@@ -18,19 +18,19 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-// export const apiHost = () => {
-//   return window.location.href.split("/#/")[0].replace(/\/$/, "") + "/api";
-// };
-const apiHost = "http://localhost:9090";
+export const apiHost = () => {
+  return window.location.href.split("/#/")[0].replace(/\/$/, "") + "/api";
+};
+// const apiHost() = "http://localhost:9090";
 
 export const registerAccount = async (username, password) => {
   const fdp = new FdpStorage(config.beeUrl, config.postageBatchId);
   console.log({ username, password });
   console.log(username, password, "mmmm");
   const _wallet = fdp.account.createWallet();
-  console.log(apiHost, "lll");
+  console.log(apiHost(), "lll");
   const ENDPOINT = "/v2/user/signup";
-  const FAIROS_HOST = apiHost;
+  const FAIROS_HOST = apiHost();
   console.log(FAIROS_HOST, "kkkk");
   let url = `${FAIROS_HOST}${ENDPOINT}`;
   console.log(url, "urlssss");
@@ -106,7 +106,7 @@ export const createAppPod = async () => {
   };
 
   const ENDPOINT = "/v1/pod/new";
-  const FAIROS_HOST = apiHost;
+  const FAIROS_HOST = apiHost();
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -126,7 +126,7 @@ export const openAppPod = async () => {
   };
 
   const ENDPOINT = "/v1/pod/open";
-  const FAIROS_HOST = apiHost;
+  const FAIROS_HOST = apiHost();
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -147,7 +147,7 @@ export const createAppDir = async () => {
   };
 
   let ENDPOINT = "/v1/dir/mkdir";
-  const FAIROS_HOST = apiHost;
+  const FAIROS_HOST = apiHost();
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -173,7 +173,7 @@ export const listTodos = async () => {
   };
 
   let ENDPOINT = "/v1/dir/ls";
-  const FAIROS_HOST = apiHost;
+  const FAIROS_HOST = apiHost();
   let response = await fetch(
     FAIROS_HOST + ENDPOINT + "?" + new URLSearchParams(data),
     {
@@ -204,7 +204,7 @@ export const readTodo = async (todofile) => {
     filePath: config.todoItemsDirectory + "/" + todofile,
   };
 
-  let FAIROS_HOST = apiHost;
+  let FAIROS_HOST = apiHost();
   let ENDPOINT = "/v1/file/download";
 
   let response = await fetch(
