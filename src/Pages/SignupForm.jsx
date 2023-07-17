@@ -1,8 +1,8 @@
 import React from 'react';
 import {} from './Login'
-import { registerAccount } from "../utils.ts";
+import { registerAccount } from "../utils";
 
-class SignupForm extends React.Component<RouteComponentProps> {
+class SignupForm extends React.Component {
   state = {
     email: '',
     password: '',
@@ -16,9 +16,8 @@ class SignupForm extends React.Component<RouteComponentProps> {
     this.setState({ password: e.target.value });
   };
 
-  handleSubmit = async () => {
+  handleSubmit = () => {
     const { email, password } = this.state;
-    const localEmail = email;
     // Add your signup logic here
     console.log('Signup form submitted');
     console.log('Email:', email);
@@ -27,18 +26,33 @@ class SignupForm extends React.Component<RouteComponentProps> {
       alert("Please enter a username and password.");
       return;
     }
-    // registerAccount(email, password);
-    await registerAccount(localEmail, password)
-      console.log(email, "aaakaakakakkakakak")
-      console.log(this.props.history, "aaakaakakakkakakak")
-      // this.props.history.push('/signup-success'); // Redirect to the success page
-    ;
+    registerAccount(email, password);
     // Reset form fields
     this.setState({
       email: '',
       password: '',
     });
+    
   };
+  // handleEmailSignupSubmit = async () => {
+  //   console.log("handleEmailSignupSubmit called"); // Add this line
+  //   const { email, password } = this.state;
+  //   console.log(email, password, "tjtjtj"); // Print email and password to the console
+
+  //   if (email === "" || password === "") {
+  //     alert("Please enter a username and password.");
+  //     return;
+  //   }
+
+  //   try {
+  //     await registerAccount(email, password);
+  //     console.log("Account registered successfully.");
+  //     // Additional logic after successful registration, such as redirecting to a different page
+  //   } catch (error) {
+  //     console.error("Error registering account:", error);
+  //     // Handle any errors that occur during the registration process
+  //   }
+  // };
 
   render() {
     const { email, password } = this.state;
