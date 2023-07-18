@@ -252,3 +252,35 @@ export async function topUpAddress(fdp, address, amountInEther) {
       });
     });
 }
+
+export const loginAccount = async (userName, password) => {
+  const ENDPOINT = "/v2/user/login";
+  const FAIROS_HOST = apiHost();
+  let data = {
+    userName,
+    password,
+  };
+  console.log("ppppp")
+  let response = await fetch(FAIROS_HOST + ENDPOINT, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(data),
+  });
+  console.log("llllll", response)
+
+  let json = await response.json();
+  console.log("jjkkkk", json)
+
+  if (response.ok) {
+    initTodos().then((todos) => {
+      console.log({ todos });
+      todoItems.set(todos);
+      state.set(STATE.INFO);
+      wallet.set({ address: json.address, mnemonic: "" });
+      user.set(userName);
+    });
+    console.log({ response, json });
+  } else {
+    console.error({ response, json });
+  }
+};
