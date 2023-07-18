@@ -1,38 +1,35 @@
-import React from 'react';
-import {} from './Login'
+import React, { useState, useContext } from "react";
+import {} from "./Login";
 import { loginAccount } from "../utils";
+import { UserContext } from "./Context/contexts";
 
-class LoginForm extends React.Component {
-  state = {
-    email: '',
-    password: '',
+const LoginForm = () => {
+  const { userName, walletAddress, memonic } = useContext(UserContext);
+  console.log(memonic, walletAddress, userName, "dsadasd");
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  handleEmailChange = (e) => {
-    this.setState({ email: e.target.value });
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
-  handlePasswordChange = (e) => {
-    this.setState({ password: e.target.value });
-  };
-
-  handleSubmit = () => {
+  const handleSubmit = () => {
     const { email, password } = this.state;
     // Add your signup logic here
-    console.log('Signup form submitted');
-    console.log('Email:', email);
-    console.log('Password:', password);
+    console.log("Signup form submitted");
+    console.log("Email:", email);
+    console.log("Password:", password);
     if (email === "" || password === "") {
       alert("Please enter a username and password.");
       return;
     }
     loginAccount(email, password);
     // Reset form fields
-    this.setState({
-      email: '',
-      password: '',
-    });
-    
+    setEmail("");
+    setPassword("");
   };
   // handleEmailSignupSubmit = async () => {
   //   console.log("handleEmailSignupSubmit called"); // Add this line
@@ -54,27 +51,23 @@ class LoginForm extends React.Component {
   //   }
   // };
 
-  render() {
-    const { email, password } = this.state;
-
-    return (
-      <div>
-        <input
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={this.handleEmailChange}
-        />
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={this.handlePasswordChange}
-        />
-        <button onClick={this.handleSubmit}>Login</button>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <input
+        type="email"
+        placeholder="Enter email"
+        value={email}
+        onChange={handleEmailChange}
+      />
+      <input
+        type="password"
+        placeholder="Enter password"
+        value={password}
+        onChange={handlePasswordChange}
+      />
+      <button onClick={handleSubmit}>Login</button>
+    </div>
+  );
+};
 
 export default LoginForm;

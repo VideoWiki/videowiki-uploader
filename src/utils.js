@@ -40,29 +40,7 @@ export const registerAccount = async (username, password) => {
     mnemonic: _wallet.mnemonic.phrase,
   };
   console.log(data);
-  let response = await fetch(url, {
-    headers,
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-  let json = await response.json();
-  if (response.ok) {
-    console.log("ok", { response, json });
-    initTodos().then((todos) => {
-      console.log({ todos });
-      todoItems.set(todos);
-      wallet.set({
-        address: _wallet.address,
-        mnemonic: _wallet.mnemonic.phrase,
-      });
-      user.set(username);
-    });
-  } else {
-    state.set(STATE.ERROR);
-    message.set(json.message);
-    console.error("error", { response, json });
-  }
-  topUpAddress(fdp, _wallet.address, "0.01").then(async () => {
+  return new Promise(async (res, rej) => {
     let response = await fetch(url, {
       headers,
       method: "POST",
@@ -74,6 +52,7 @@ export const registerAccount = async (username, password) => {
       initTodos().then((todos) => {
         console.log({ todos });
         todoItems.set(todos);
+        res(json);
         wallet.set({
           address: _wallet.address,
           mnemonic: _wallet.mnemonic.phrase,
@@ -85,6 +64,30 @@ export const registerAccount = async (username, password) => {
       message.set(json.message);
       console.error("error", { response, json });
     }
+    topUpAddress(fdp, _wallet.address, "0.01").then(async () => {
+      let response = await fetch(url, {
+        headers,
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      let json = await response.json();
+      if (response.ok) {
+        console.log("ok", { response, json });
+        initTodos().then((todos) => {
+          console.log({ todos });
+          todoItems.set(todos);
+          wallet.set({
+            address: _wallet.address,
+            mnemonic: _wallet.mnemonic.phrase,
+          });
+          user.set(username);
+        });
+      } else {
+        state.set(STATE.ERROR);
+        message.set(json.message);
+        console.error("error", { response, json });
+      }
+    });
   });
 };
 
@@ -260,16 +263,16 @@ export const loginAccount = async (userName, password) => {
     userName,
     password,
   };
-  console.log("ppppp")
+  console.log("ppppp");
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
     body: JSON.stringify(data),
   });
-  console.log("llllll", response)
+  console.log("llllll", response);
 
   let json = await response.json();
-  console.log("jjkkkk", json)
+  console.log("jjkkkk", json);
 
   if (response.ok) {
     initTodos().then((todos) => {

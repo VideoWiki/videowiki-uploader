@@ -41,8 +41,6 @@ class LoginSignupOptions extends React.Component {
     });
   };
 
-  
-
   // handleEmailChange = (event) => {
   //   this.setState({ email: event.target.value });
   // };
@@ -55,7 +53,7 @@ class LoginSignupOptions extends React.Component {
     console.log("New email value:", event.target.value);
     this.setState({ email: event.target.value });
   };
-  
+
   handlePasswordChange = (event) => {
     console.log("handlePasswordChange called");
     console.log("New password value:", event.target.value);
@@ -64,9 +62,12 @@ class LoginSignupOptions extends React.Component {
 
   render() {
     console.log(
-      "isSignup:", this.state.isSignup,
-      "isLogin:", this.state.isLogin,
-      "showEmailPasswordForm:", this.state.showEmailPasswordForm
+      "isSignup:",
+      this.state.isSignup,
+      "isLogin:",
+      this.state.isLogin,
+      "showEmailPasswordForm:",
+      this.state.showEmailPasswordForm
     );
     const { isSignup, isLogin, showEmailPasswordForm } = this.state;
 
