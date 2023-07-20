@@ -25,7 +25,7 @@ const SignupForm = () => {
   };
 
   const handleSubmit = () => {
-    const { email, password } = this.state;
+    // const { email, password } = this.state;
     // Add your signup logic here
     console.log("Signup form submitted");
     console.log("Email:", email);

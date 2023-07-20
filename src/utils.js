@@ -263,7 +263,7 @@ export const loginAccount = async (userName, password) => {
     userName,
     password,
   };
-  console.log("ppppp");
+  console.log("ppppp", userName, password);
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -282,6 +282,7 @@ export const loginAccount = async (userName, password) => {
       wallet.set({ address: json.address, mnemonic: "" });
       user.set(userName);
     });
+    return(json)
     console.log({ response, json });
   } else {
     console.error({ response, json });
