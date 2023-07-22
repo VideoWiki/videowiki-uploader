@@ -1,68 +1,136 @@
-/* src/popup.css */
+/* src/Popup.css */
 body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-  }
-  
-  .container {
-    width: 400px;
-    max-width: 90%;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .button {
-    margin-top: 10px;
-    padding: 12px 24px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-  }
-  
-  .button:hover {
-    background-color: #45a049;
-  }
-  
-  .button:active {
-    background-color: #3e8e41;
-  }
-  .options {
-    display: flex;
-    justify-content: space-between;
-  }
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
 
-  .option-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .option-btn:hover {
-    background-color: #0056b3;
-  }
+.container {
+  width: 400px;
+  max-width: 90%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Improved styles for the sign-in and sign-up buttons */
+.button {
+  margin-top: 10px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Add some hover effects to the buttons */
+.button:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+  transform: scale(1.05);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Add a more pronounced click effect */
+.button:active {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transform: scale(0.95);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Improved styles for option buttons */
+.option-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Add some hover effects to option buttons */
+.option-btn:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+  transform: scale(1.05);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Add a more pronounced click effect */
+.option-btn:active {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transform: scale(0.95);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Add some spacing between the buttons */
+.option-btn + .option-btn {
+  margin-left: 10px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.login-button {
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-button:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+  transform: scale(1.05);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.login-button:active {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transform: scale(0.95);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+

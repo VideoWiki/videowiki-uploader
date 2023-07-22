@@ -1,0 +1,203 @@
+/* UserDetails.css */
+
+.user-details-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  height: 600;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+  margin-bottom: 20px;
+}
+.wallet-address {
+  /* Add your styling for wallet address to limit its width or add ellipsis */
+  word-wrap: break-word;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-todos-container {
+  /* Add your styling for user-todos section */
+  max-height: 400px; /* Set the maximum height of the container */
+  overflow-y: auto; /* Enable vertical scrollbar when content exceeds the height */
+}
+
+.user-info h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.user-info p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.user-todos {
+  margin-bottom: 20px;
+}
+
+.user-todos h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.todos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.todos-scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.todo-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.todo-thumbnail img,
+.todo-thumbnail video {
+  max-width: 120px;
+  max-height: 90px;
+  border-radius: 4px;
+}
+
+.todo-details {
+  margin-top: 10px;
+}
+
+.todo-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.todo-actions button {
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.todo-actions button:hover {
+  background-color: #c82333;
+}
+
+.todo-actions button:active {
+  background-color: #b21f2d;
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.file-upload label {
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.upload-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.upload-button:hover {
+  background-color: #0056b3;
+}
+
+.upload-button:active {
+  background-color: #003f81;
+}
+.select-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.select-button:hover {
+  background-color: #0056b3;
+}
+
+.select-button:active {
+  background-color: #003f81;
+}
+.selected {
+  background-color: #28a745;
+}
+/* Additional styling to center the "Select Files" button */
+.file-label {
+  display: flex;
+  align-items: center;
+}
+.todo-actions {
+  display: flex;
+  justify-content: space-between; /* Add space between the buttons */
+  align-items: center; /* Center the buttons vertically */
+  margin-top: 10px;
+}
+
+.todo-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.todo-actions button.delete-button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.todo-actions button.delete-button:hover {
+  background-color: #c82333;
+}
+
+.todo-actions button.delete-button:active {
+  background-color: #b21f2d;
+}
+
+.todo-actions button.download-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.todo-actions button.download-button:hover {
+  background-color: #0056b3;
+}
+
+.todo-actions button.download-button:active {
+  background-color: #003f81;
+}

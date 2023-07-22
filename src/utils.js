@@ -19,7 +19,8 @@ const headers = {
 };
 
 export const apiHost = () => {
-  return window.location.href.split("/#/")[0].replace(/\/$/, "") + "/api";
+  let url = window.location.href.replace(/:3000\/.*/, ":3000/api");
+  return url;
 };
 // const apiHost() = "http://localhost:9090";
 
@@ -40,55 +41,68 @@ export const registerAccount = async (username, password) => {
     mnemonic: _wallet.mnemonic.phrase,
   };
   console.log(data);
-  return new Promise(async (res, rej) => {
-    let response = await fetch(url, {
-      headers,
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    let json = await response.json();
-    if (response.ok) {
-      console.log("ok", { response, json });
-      initTodos().then((todos) => {
-        console.log({ todos });
-        todoItems.set(todos);
-        res(json);
-        wallet.set({
-          address: _wallet.address,
-          mnemonic: _wallet.mnemonic.phrase,
-        });
-        user.set(username);
-      });
-    } else {
-      state.set(STATE.ERROR);
-      message.set(json.message);
-      console.error("error", { response, json });
-    }
-    topUpAddress(fdp, _wallet.address, "0.01").then(async () => {
-      let response = await fetch(url, {
-        headers,
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-      let json = await response.json();
-      if (response.ok) {
-        console.log("ok", { response, json });
-        initTodos().then((todos) => {
-          console.log({ todos });
-          todoItems.set(todos);
-          wallet.set({
-            address: _wallet.address,
-            mnemonic: _wallet.mnemonic.phrase,
-          });
-          user.set(username);
-        });
-      } else {
-        state.set(STATE.ERROR);
-        message.set(json.message);
-        console.error("error", { response, json });
-      }
-    });
+  // return new Promise(async (res, rej) => {
+  let response = await fetch(url, {
+    headers,
+    method: "POST",
+    body: JSON.stringify(data),
   });
+  let json = await response.json();
+  // return json;
+  if (response.ok) {
+    alert("ok", { response, json });
+    const todos = await initTodos();
+    // return todos;
+    // initTodos().then((todos) => {
+    console.log({ todos });
+    todoItems.set(todos);
+    // res(json);
+    wallet.set({
+      address: _wallet.address,
+      mnemonic: _wallet.mnemonic.phrase,
+    });
+    user.set(username);
+
+    // });
+  } else {
+    state.set(STATE.ERROR);
+    message.set(json.message);
+    console.error("error", { response, json });
+  }
+  await topUpAddress(fdp, _wallet.address, "0.01")
+  let response1 = await fetch(url, {
+    headers,
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  let json1 = await response1.json();
+  if (response1.ok) {
+    console.log("ok", { response1, json1 });
+    const todos = await initTodos();
+    // initTodos().then((todos) => {
+    console.log({ todos });
+    todoItems.set(todos);
+    wallet.set({
+      address: _wallet.address,
+      mnemonic: _wallet.mnemonic.phrase,
+    });
+    user.set(username);
+    let userDict = {
+      userName: username,
+      address: _wallet.address,
+      mnemonic: _wallet.mnemonic.phrase,
+      todos: []
+    };
+    return userDict;
+    // });
+
+  } else {
+    state.set(STATE.ERROR);
+    message.set(json1.message);
+    console.error("error", { response, json1 });
+  }
+  // });
+  // });
 };
 
 export const initTodos = () => {
@@ -177,25 +191,33 @@ export const listTodos = async () => {
 
   let ENDPOINT = "/v1/dir/ls";
   const FAIROS_HOST = apiHost();
-  let response = await fetch(
-    FAIROS_HOST + ENDPOINT + "?" + new URLSearchParams(data),
-    {
-      method: "GET",
-      headers,
-    }
-  );
 
-  let json = await response.json();
-  if (response.ok) {
-    console.log({ response, json });
-    let res = (json.files || []).map(async ({ name }) => {
-      return readTodo(name);
-    });
-    return Promise.all(res);
-  } else {
-    console.error({ response, json });
+  try {
+    let response = await fetch(
+      FAIROS_HOST + ENDPOINT + "?" + new URLSearchParams(data),
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
+    let json = await response.json();
+
+    if (response.ok) {
+      console.log({ response, json }, "33336666");
+      let res = await Promise.all((json.files || []).map(async ({ name }) => {
+        return await readTodo(name);
+      }));
+
+      return res;
+    } else {
+      console.error({ response, json });
+    }
+  } catch (error) {
+    console.error("Error:", error);
   }
 };
+
 
 export const readTodo = async (todofile) => {
   let headers = {
@@ -206,7 +228,7 @@ export const readTodo = async (todofile) => {
     podName: config.todoAppNamespace,
     filePath: config.todoItemsDirectory + "/" + todofile,
   };
-
+  console.warn(data, "here33333")
   let FAIROS_HOST = apiHost();
   let ENDPOINT = "/v1/file/download";
 
@@ -218,11 +240,16 @@ export const readTodo = async (todofile) => {
       headers,
     }
   );
-
-  let json = await response.json();
+  let json = await response.blob();
+  console.warn("here3333344444")
   if (response.ok) {
     console.log({ response, json });
-    return json;
+    console.warn("here triggered", response, json)
+    let jsonResponse = {
+      name: todofile,
+      blob: json
+    };
+    return jsonResponse;
   } else {
     console.error({ response, json });
   }
@@ -275,16 +302,185 @@ export const loginAccount = async (userName, password) => {
   console.log("jjkkkk", json);
 
   if (response.ok) {
-    initTodos().then((todos) => {
-      console.log({ todos });
+    try {
+      // Assuming `initTodos()` returns the `todos` array
+      let todos = await initTodos();
+      // Convert the Blob array to an array of data URLs
+      console.warn(todos, "dhudififii")
+      const dataURLs = await Promise.all(
+        todos.map((todo) => {
+          return {
+            name: todo.name,
+            dataURL: URL.createObjectURL(todo.blob),
+            type: todo.blob.type, // Add the 'type' of the todo blob here
+          };
+        })
+      );
+
+      // Initialize 'todoItems' with the data URLs
+      todoItems.set(dataURLs);
+      console.warn(dataURLs, "whwhwhwh");
+      console.warn(todos, "lllhgff");
+      // Initializing the 'todoItems' variable with the 'todos' array
       todoItems.set(todos);
       state.set(STATE.INFO);
       wallet.set({ address: json.address, mnemonic: "" });
       user.set(userName);
-    });
-    return(json)
-    console.log({ response, json });
+
+      // Constructing the array of objects with the desired values
+      let todosArray = dataURLs.map((todo, index) => {
+        return {
+          name: todos[index].name,
+          dataURL: todo.dataURL,
+          type: todo.type, // Include the 'type' in the todosArray
+        };
+      });
+
+      console.log(todosArray, "array of todos");
+      return {
+        userName: userName,
+        address: json.address,
+        todoItems: todosArray,
+      };
+    } catch (error) {
+      console.error("Error initializing todos", error);
+    }
   } else {
     console.error({ response, json });
+  }
+
+  // If something goes wrong or the response is not ok, return null
+  return null;
+};
+
+export const addTodo = async (todo, todos) => {
+  console.log({ todo, todos });
+  console.log("aaaaaaaaa");
+  const fileInput = document.getElementById("todo");
+  const file = fileInput.files[0];
+  console.log(file.type);
+  if (!file) {
+    return todos;
+  }
+
+  const blob = new Blob([file], {
+    type: file.type,
+  });
+
+  const formData = new FormData();
+  formData.append("files", blob, "todo_" + todo.id);
+  formData.set("podName", config.todoAppNamespace);
+  formData.set("dirPath", config.todoItemsDirectory);
+  formData.set("blockSize", "1Mb");
+
+  const ENDPOINT = "/v1/file/upload";
+  let response = await fetch(apiHost() + ENDPOINT, {
+    credentials: "include",
+    method: "POST",
+    body: formData,
+  });
+
+  let json = await response.json();
+  if (response.ok) {
+    let jsonResponse = {
+      name: "todo_" + todo.id,
+      blob: blob,
+      type: file.type, // Add the type property
+      dataURL: URL.createObjectURL(blob), // Set the 'dataURL' property
+    };
+    console.log(jsonResponse, "0002222233333");
+    todos.push(jsonResponse);
+  } else {
+    console.error({ response, json });
+  }
+  return todos;
+};
+
+export const deleteTodo = async (deleteTodoName, todos) => {
+  const data = {
+    podName: config.todoAppNamespace,
+    filePath: `${config.todoItemsDirectory}/${deleteTodoName}`,
+  };
+
+  const FAIROS_HOST = apiHost();
+  const ENDPOINT = "/v1/file/delete";
+
+  const response = await fetch(FAIROS_HOST + ENDPOINT, {
+    credentials: "include",
+    method: "DELETE",
+    headers,
+    body: JSON.stringify(data),
+  });
+
+  const json = await response.json();
+  if (response.ok) {
+    console.log({ response, json });
+    return todos.filter((todo) => todo.name !== deleteTodoName);
+  } else {
+    console.error({ response, json });
+  }
+};
+
+// export const downloadTodo = async (downloadTodoName, todos) => {
+//   const data = {
+//     podName: config.todoAppNamespace,
+//     filePath: `${config.todoItemsDirectory}/${downloadTodoName}`,
+//   };
+
+//   const FAIROS_HOST = apiHost();
+//   const ENDPOINT = "/v1/file/download";
+
+//   const response = await fetch(FAIROS_HOST + ENDPOINT, {
+//     credentials: "include",
+//     method: "GET",
+//     headers,
+//     body: JSON.stringify(data),
+//   });
+
+//   const json = await response.json();
+//   if (response.ok) {
+//     console.log({ response, json });
+//     return true;
+//   } else {
+//     console.error({ response, json });
+//   }
+// };
+
+export const downloadTodo = async (downloadTodoName, todos) => {
+  const data = {
+    podName: config.todoAppNamespace,
+    filePath: `${config.todoItemsDirectory}/${downloadTodoName}`,
+  };
+
+  const FAIROS_HOST = apiHost();
+  const ENDPOINT = "/v1/file/download";
+
+  const url = new URL(FAIROS_HOST + ENDPOINT);
+  url.search = new URLSearchParams(data).toString();
+
+  try {
+    const response = await fetch(url, {
+      credentials: "include",
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      console.error("Failed to download file.");
+      return false;
+    }
+
+    const blob = await response.blob();
+
+    // Create a download link for the Blob
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = downloadTodoName; // Set the filename for the download
+    downloadLink.click();
+
+    return true; // Indicates the download was successful.
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    return false; // Indicates the download failed.
   }
 };
