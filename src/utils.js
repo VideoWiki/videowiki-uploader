@@ -78,7 +78,7 @@ export const registerAccount = async (username, password) => {
   let json1 = await response1.json();
   if (response1.ok) {
     console.log("ok", { response1, json1 });
-    const todos = await initTodos();
+    const todos = await initTodos(username);
     // initTodos().then((todos) => {
     console.log({ todos });
     todoItems.set(todos);
@@ -105,21 +105,22 @@ export const registerAccount = async (username, password) => {
   // });
 };
 
-export const initTodos = () => {
-  return createAppPod().then(() => {
-    console.log(config.todoAppNamespace + ": AppPod created");
-    return openAppPod().then(() => {
-      console.log(config.todoAppNamespace + ": AppPod opened");
-      return createAppDir().then(() => {
-        console.log(config.todoItemsDirectory + ": Directory created opened");
-        return listTodos();
+export const initTodos = async (userName) => {
+  return createAppPod(userName).then(() => {
+    console.log(userName + ": AppPod created");
+    return openAppPod(userName).then(() => {
+      console.log(userName + ": AppPod opened");
+      return createAppDir(userName).then(() => {
+        console.log(userName + ": Directory created opened");
+        return listTodos(userName);
       });
     });
   });
 };
-export const createAppPod = async () => {
+
+export const createAppPod = async (userName) => {
   let data = {
-    podName: config.todoAppNamespace,
+    podName: userName,
   };
 
   const ENDPOINT = "/v1/pod/new";
@@ -137,9 +138,9 @@ export const createAppPod = async () => {
     console.error({ response, json });
   }
 };
-export const openAppPod = async () => {
+export const openAppPod = async (userName) => {
   let data = {
-    podName: config.todoAppNamespace,
+    podName: userName,
   };
 
   const ENDPOINT = "/v1/pod/open";
@@ -157,10 +158,10 @@ export const openAppPod = async () => {
     console.error({ response, json });
   }
 };
-export const createAppDir = async () => {
+export const createAppDir = async (userName) => {
   let data = {
-    podName: config.todoAppNamespace,
-    dirPath: config.todoItemsDirectory,
+    podName: userName,
+    dirPath: "/" + userName,
   };
 
   let ENDPOINT = "/v1/dir/mkdir";
@@ -179,14 +180,14 @@ export const createAppDir = async () => {
   }
 };
 
-export const listTodos = async () => {
+export const listTodos = async (userName) => {
   let headers = {
     "Content-Type": "application/json",
   };
 
   let data = {
-    podName: config.todoAppNamespace,
-    dirPath: config.todoItemsDirectory,
+    podName: userName,
+    dirPath: "/" + userName,
   };
 
   let ENDPOINT = "/v1/dir/ls";
@@ -206,7 +207,7 @@ export const listTodos = async () => {
     if (response.ok) {
       console.log({ response, json }, "33336666");
       let res = await Promise.all((json.files || []).map(async ({ name }) => {
-        return await readTodo(name);
+        return await readTodo(name, userName);
       }));
 
       return res;
@@ -219,14 +220,14 @@ export const listTodos = async () => {
 };
 
 
-export const readTodo = async (todofile) => {
+export const readTodo = async (todofile, userName) => {
   let headers = {
     "Content-Type": "application/json",
   };
 
   let data = {
-    podName: config.todoAppNamespace,
-    filePath: config.todoItemsDirectory + "/" + todofile,
+    podName: userName,
+    filePath: "/" + userName + "/" + todofile,
   };
   console.warn(data, "here33333")
   let FAIROS_HOST = apiHost();
@@ -353,7 +354,7 @@ export const loginAccount = async (userName, password) => {
   return null;
 };
 
-export const addTodo = async (todo, todos) => {
+export const addTodo = async (todo, todos, userName) => {
   console.log({ todo, todos });
   console.log("aaaaaaaaa");
   const fileInput = document.getElementById("todo");
@@ -369,8 +370,8 @@ export const addTodo = async (todo, todos) => {
 
   const formData = new FormData();
   formData.append("files", blob, "todo_" + todo.id);
-  formData.set("podName", config.todoAppNamespace);
-  formData.set("dirPath", config.todoItemsDirectory);
+  formData.set("podName", userName);
+  formData.set("dirPath", "/" + userName);
   formData.set("blockSize", "1Mb");
 
   const ENDPOINT = "/v1/file/upload";
@@ -396,10 +397,10 @@ export const addTodo = async (todo, todos) => {
   return todos;
 };
 
-export const deleteTodo = async (deleteTodoName, todos) => {
+export const deleteTodo = async (deleteTodoName, todos, userName) => {
   const data = {
-    podName: config.todoAppNamespace,
-    filePath: `${config.todoItemsDirectory}/${deleteTodoName}`,
+    podName: userName,
+    filePath: `${"/" + userName}/${deleteTodoName}`,
   };
 
   const FAIROS_HOST = apiHost();
@@ -446,10 +447,10 @@ export const deleteTodo = async (deleteTodoName, todos) => {
 //   }
 // };
 
-export const downloadTodo = async (downloadTodoName, todos) => {
+export const downloadTodo = async (downloadTodoName, todos, userName) => {
   const data = {
-    podName: config.todoAppNamespace,
-    filePath: `${config.todoItemsDirectory}/${downloadTodoName}`,
+    podName: userName,
+    filePath: `${"/" + userName}/${downloadTodoName}`,
   };
 
   const FAIROS_HOST = apiHost();

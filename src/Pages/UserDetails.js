@@ -62,7 +62,7 @@ const UserDetails = () => {
           id: Date.now(),
         };
 
-        const updatedTodos = await addTodo(todo, todos, file);
+        const updatedTodos = await addTodo(todo, todos, userName, file);
         setTodos(updatedTodos);
         // Save updated todos to local storage
         localStorage.setItem("user", JSON.stringify({ userName, walletAddress, memonic, todos: updatedTodos }));
@@ -80,7 +80,7 @@ const UserDetails = () => {
 
   const handleDeleteTodo = async (deleteTodoName) => {
     try {
-      const updatedTodos = await deleteTodo(deleteTodoName, todos);
+      const updatedTodos = await deleteTodo(deleteTodoName, todos, userName);
       setTodos(updatedTodos);
       // Save updated todos to local storage
       localStorage.setItem("user", JSON.stringify({ userName, walletAddress, memonic, todos: updatedTodos }));
@@ -91,7 +91,7 @@ const UserDetails = () => {
 
   const handleDownloadTodo = async (downloadTodoName) => {
     try {
-      const downloadSuccess = await downloadTodo(downloadTodoName, todos);
+      const downloadSuccess = await downloadTodo(downloadTodoName, todos, userName);
       if (downloadSuccess) {
         console.log("File downloaded successfully.");
       } else {
