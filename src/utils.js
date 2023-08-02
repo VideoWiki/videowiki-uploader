@@ -20,7 +20,7 @@ const headers = {
 
 export const apiHost = () => {
   let url = window.location.href.replace(/:3000\/.*/, ":3000/api");
-  console.log("bruhhh", url)
+  console.log("bruhhh", window.location.href)
   return url;
 };
 // const apiHost() = "http://localhost:9090";
