@@ -19,7 +19,7 @@ const headers = {
 };
 
 export const apiHost = () => {
-  let url = window.location.href.replace(/:3000\/.*/, ":3000/api");
+  let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "https://fairos.video.wiki/api");
   return url;
 };
 // const apiHost() = "http://localhost:9090";
