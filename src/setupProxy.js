@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://localhost:9090",
+      target: "https://qbee.video.wiki",
       changeOrigin: true,
       pathRewrite: {
         "^/api": "",

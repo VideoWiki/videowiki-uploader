@@ -19,7 +19,8 @@ const headers = {
 };
 
 export const apiHost = () => {
-  let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
+  // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
+  let url = "https://fairos.video.wiki/api"
   return url;
 };
 // const apiHost() = "http://localhost:9090";
@@ -258,6 +259,8 @@ export const readTodo = async (todofile, userName) => {
 
 export async function topUpAddress(fdp, address, amountInEther) {
   const ens = fdp.ens;
+  console.log(ens, "ensss")
+  ens.config.rpcUrl = "https://brpc.video.wiki"
   const accounts = await ens.provider.listAccounts();
   const balances = [];
   accounts.map(async (addr, i) => {

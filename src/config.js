@@ -6,10 +6,11 @@
 //   fairOsHost: "process.env.VITE_FAIROS_HOST",
 // };
 export const config = {
-  beeUrl: "http://localhost:1633",
+  // beeUrl: "http://localhost:1633",
+  beeUrl: "https://bee.video.wiki",
   postageBatchId:
     "799c509a19a6152b1391b035ba738987c845ea29304e42e609c1d68376ee3ece",
   todoAppNamespace: "TodosApp",
   todoItemsDirectory: "/todo-items",
-  fairOsHost: "http://localhost:9090",
+  fairOsHost: "https://qbee.video.wiki",
 };
