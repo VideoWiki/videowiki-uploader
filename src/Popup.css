@@ -111,6 +111,7 @@ input {
 }
 
 .login-button {
+  margin: 2px;
   padding: 12px 24px;
   background: linear-gradient(90deg, #007bff, #0056b3);
   color: #fff;

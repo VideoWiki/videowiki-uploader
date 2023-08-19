@@ -6,10 +6,14 @@ import UserDetails from "./Pages/UserDetails";
 import "./Popup.css"; // Import the CSS file here
 import LoginForm from "./Pages/LoginForm";
 import SignupForm from "./Pages/SignupForm";
+import Metamask from "./Pages/Metamask";
 
 function Home() {
   return (
     <div className="popup">
+      <div className="options">
+        <Link to="/metamask" className="option-btn">Connect with Metamask</Link>
+      </div>
       <div className="options">
         <Link to="/login" className="option-btn">Sign In</Link>
         <Link to="/signup" className="option-btn">Sign Up</Link>
@@ -30,6 +34,7 @@ function Popup() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/userdetails" element={<UserDetails />} />
+            <Route path="/metamask" element={<Metamask />} />
           </Routes>
         </div>
       </UserState>

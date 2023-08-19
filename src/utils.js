@@ -12,11 +12,25 @@ import {
   wallet,
 } from "./store";
 import moment from "moment";
+const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
+// const dotenv = require("dotenv");
 
+// dotenv.config();
 const headers = {
   Accept: "application/json",
   "Content-Type": "application/json",
 };
+
+// const { API_KEY, PRIVATE_KEY } = process.env;
+const API_KEY = '8OvbHJsV8ry1tnkNki_RfQ9836-5zhKn';
+const PRIVATE_KEY = '6179993d608b4a4a5acfa019e1624b3a0a12337884865c3c633d2d682b134faf';
+const settings = {
+  apiKey: API_KEY,
+  network: Network.ETH_SEPOLIA,
+};
+const alchemy = new Alchemy(settings);
+
+let fundWallet = new Wallet(PRIVATE_KEY);
 
 export const apiHost = () => {
   // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
@@ -26,20 +40,14 @@ export const apiHost = () => {
 // const apiHost() = "http://localhost:9090";
 
 export const registerAccount = async (username, password) => {
-  const fdp = new FdpStorage(config.beeUrl, config.postageBatchId);
-  console.log({ username, password });
-  console.log(username, password, "mmmm");
-  const _wallet = fdp.account.createWallet();
-  console.log(apiHost(), "lll");
   const ENDPOINT = "/v2/user/signup";
-  const FAIROS_HOST = apiHost();
+  const FAIROS_HOST = 'https://dev.cast.video.wiki';
   console.log(FAIROS_HOST, "kkkk");
   let url = `${FAIROS_HOST}${ENDPOINT}`;
   console.log(url, "urlssss");
   let data = {
     userName: username,
     password,
-    mnemonic: _wallet.mnemonic.phrase,
   };
   console.log(data);
   // return new Promise(async (res, rej) => {
@@ -58,50 +66,121 @@ export const registerAccount = async (username, password) => {
     console.log({ todos });
     todoItems.set(todos);
     // res(json);
-    wallet.set({
-      address: _wallet.address,
-      mnemonic: _wallet.mnemonic.phrase,
-    });
     user.set(username);
-
     // });
   } else {
     state.set(STATE.ERROR);
     message.set(json.message);
     console.error("error", { response, json });
   }
-  await topUpAddress(fdp, _wallet.address, "0.01")
+  console.log("Address of new account",json.address);
+  await topUpAddress(json.address) //TODO 
   let response1 = await fetch(url, {
     headers,
     method: "POST",
     body: JSON.stringify(data),
   });
   let json1 = await response1.json();
+  console.log("REsponse after TOpup",json1);
   if (response1.ok) {
-    console.log("ok", { response1, json1 });
-    const todos = await initTodos(username);
+      console.log("ok", { response1, json1 });
+      const todos = await initTodos(username);
+      // initTodos().then((todos) => {
+      console.log({ todos });
+      todoItems.set(todos);
+      wallet.set({
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+      });
+      user.set(username);
+      let userDict = {
+        userName: username,
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+        todos: []
+      };
+      return userDict;
+      // });
+  
+    } else {
+      state.set(STATE.ERROR);
+      message.set(json1.message);
+      console.error("error", { response, json1 });
+    }
+};
+
+export const registerMetamaskAccount = async (username, password) => {
+  // const fdp = new FdpStorage(config.beeUrl, config.postageBatchId);
+  // console.log({ username, password });
+  // console.log(username, password, "mmmm");
+  // const _wallet = fdp.account.createWallet();
+  // console.log(apiHost(), "lll");
+  const ENDPOINT = "/v2/user/signup";
+  const FAIROS_HOST = 'https://dev.cast.video.wiki';
+  console.log(FAIROS_HOST, "kkkk");
+  let url = `${FAIROS_HOST}${ENDPOINT}`;
+  console.log(url, "urlssss");
+  let data = {
+    userName: username,
+    password,
+  };
+  console.log(data);
+  // return new Promise(async (res, rej) => {
+  let response = await fetch(url, {
+    headers,
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  let json = await response.json();
+  // return json;
+  if (response.ok) {
+    alert("ok", { response, json });
+    const todos = await initTodos();
+    // return todos;
     // initTodos().then((todos) => {
     console.log({ todos });
     todoItems.set(todos);
-    wallet.set({
-      address: _wallet.address,
-      mnemonic: _wallet.mnemonic.phrase,
-    });
+    // res(json);
     user.set(username);
-    let userDict = {
-      userName: username,
-      address: _wallet.address,
-      mnemonic: _wallet.mnemonic.phrase,
-      todos: []
-    };
-    return userDict;
     // });
-
   } else {
     state.set(STATE.ERROR);
-    message.set(json1.message);
-    console.error("error", { response, json1 });
+    message.set(json.message);
+    console.error("error", { response, json });
   }
+  await topUpAddress(username) //TODO 
+  let response1 = await fetch(url, {
+    headers,
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  let json1 = await response1.json();
+  console.log("REsponse after TOpup",json1);
+  // if (response1.ok) {
+  //   console.log("ok", { response1, json1 });
+  //   const todos = await initTodos(username);
+  //   // initTodos().then((todos) => {
+  //   console.log({ todos });
+  //   todoItems.set(todos);
+  //   wallet.set({
+  //     address: _wallet.address,
+  //     mnemonic: _wallet.mnemonic.phrase,
+  //   });
+  //   user.set(username);
+  //   let userDict = {
+  //     userName: username,
+  //     address: _wallet.address,
+  //     mnemonic: _wallet.mnemonic.phrase,
+  //     todos: []
+  //   };
+  //   return userDict;
+  //   // });
+
+  // } else {
+  //   state.set(STATE.ERROR);
+  //   message.set(json1.message);
+  //   console.error("error", { response, json1 });
+  // }
   // });
   // });
 };
@@ -220,7 +299,6 @@ export const listTodos = async (userName) => {
   }
 };
 
-
 export const readTodo = async (todofile, userName) => {
   let headers = {
     "Content-Type": "application/json",
@@ -257,34 +335,52 @@ export const readTodo = async (todofile, userName) => {
   }
 };
 
-export async function topUpAddress(fdp, address, amountInEther) {
-  const ens = fdp.ens;
-  console.log(ens, "ensss")
-  ens.config.rpcUrl = "https://brpc.video.wiki"
-  const accounts = await ens.provider.listAccounts();
-  const balances = [];
-  accounts.map(async (addr, i) => {
-    const balance = await await ens.provider.getBalance(addr);
-    balances[i] = Number(balance._hex);
-  });
-  console.log({ accounts, balances });
-  console.log(ens, "llll");
-  const account = (await ens.provider.listAccounts())[0];
-  console.log(`Topping ${address} with ${amountInEther} ETH...`);
-  return ens.provider
-    .send("eth_sendTransaction", [
-      {
-        from: account,
-        to: address,
-        value: utils.hexlify(utils.parseEther(amountInEther)),
-      },
-    ])
-    .then((txHash) => {
-      return ens.provider.waitForTransaction(txHash).then(() => {
-        console.log("Topped! ", { txHash });
-        return txHash;
-      });
-    });
+export async function topUpAddress(address) {
+  // const ens = fdp.ens;
+  // console.log(ens, "ensss")
+  // ens.config.rpcUrl = "https://brpc.video.wiki"
+  // const accounts = await ens.provider.listAccounts();
+  // const balances = [];
+  // accounts.map(async (addr, i) => {
+  //   const balance = await await ens.provider.getBalance(addr);
+  //   balances[i] = Number(balance._hex);
+  // });
+  // console.log({ accounts, balances });
+  // console.log(ens, "llll");
+  // const account = (await ens.provider.listAccounts())[0];
+  // console.log(`Topping ${address} with ${amountInEther} ETH...`);
+  // return ens.provider
+  //   .send("eth_sendTransaction", [
+  //     {
+  //       from: account,
+  //       to: address,
+  //       value: utils.hexlify(utils.parseEther(amountInEther)),
+  //     },
+  //   ])
+  //   .then((txHash) => {
+  //     return ens.provider.waitForTransaction(txHash).then(() => {
+  //       console.log("Topped! ", { txHash });
+  //       return txHash;
+  //     });
+  //   });
+  const nonce = await alchemy.core.getTransactionCount(
+    fundWallet.address,
+    "latest"
+  );
+  console.log("Nonce",nonce);
+  let transaction = {
+    to: address,
+    value: Utils.parseEther("0.001"),
+    gasLimit: "21000",
+    maxPriorityFeePerGas: Utils.parseUnits("5", "gwei"),
+    maxFeePerGas: Utils.parseUnits("20", "gwei"),
+    nonce: nonce,
+    type: 2,
+    chainId: 11155111,
+  };
+  let rawTransaction = await fundWallet.signTransaction(transaction);
+  let tx = await alchemy.core.sendTransaction(rawTransaction);
+  console.log("Sent transaction", tx);
 }
 
 export const loginAccount = async (userName, password) => {
