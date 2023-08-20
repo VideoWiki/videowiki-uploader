@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ethers } from 'ethers';
-import {registerMetamaskAccount , loginAccount} from "../utils"
+import {registerAccount , loginAccount} from "../utils"
 import login from "../artifacts/contracts/Login.sol/Login.json"
 const Metamask = () => {
     const [connected, setconnected] = useState(false);
@@ -13,7 +13,7 @@ const Metamask = () => {
         try {
             await contract.createUser();
             const res = await contract.returnHash();
-            registerMetamaskAccount(account, res);
+            registerAccount(account, res);
             console.log("Registration SucessFull");
             loginUser();
         } catch (error) {
@@ -24,7 +24,7 @@ const Metamask = () => {
         try {
             const res = await contract.returnHash();
             console.log("User Logged in\nUnique hash ->",res);
-            registerMetamaskAccount(account, res);
+            loginAccount(account, res);
             console.log("Registration SucessFull");
             setuserSignedIn(true);
             
@@ -127,8 +127,6 @@ const Metamask = () => {
                             }
                         </div>
                     }
-
-
                 </div>
             }
         </div>

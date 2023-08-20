@@ -33,19 +33,23 @@ const LoginForm = () => {
       alert("Please enter a username and password.");
       return;
     }
-
-    const res = await loginAccount(email, password);
-
-    setUserName(res.userName);
-    setWalletAddress(res.address);
-    setTodos(res.todoItems);
-
-    // Redirect to UserDetails component
-    navigate("/userdetails");
-
-    // Reset form fields
-    setEmail("");
-    setPassword("");
+    try {
+      
+      const res = await loginAccount(email, password);
+  
+      setUserName(res.userName);
+      setWalletAddress(res.address);
+      setTodos(res.todoItems);
+  
+      // Redirect to UserDetails component
+      navigate("/userdetails");
+  
+      // Reset form fields
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.log("Error",error);
+    }
   };
 
   return (

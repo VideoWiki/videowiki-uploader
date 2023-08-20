@@ -19,7 +19,7 @@ const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
 const headers = {
   Accept: "application/json",
   "Content-Type": "application/json",
-};
+}; 
 
 // const { API_KEY, PRIVATE_KEY } = process.env;
 const API_KEY = '8OvbHJsV8ry1tnkNki_RfQ9836-5zhKn';
@@ -31,6 +31,79 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 let fundWallet = new Wallet(PRIVATE_KEY);
+
+const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
+  try {
+    let data = {
+      userName: username,
+      password,
+      address : address,
+      mnemonic: mnemonic
+    };
+    let response1 = await fetch(url, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    let json1 = await response1.json();
+    console.log("Mnemonic here");
+    while(response1.status === 402){
+      response1 = await fetch(url, {
+        headers,
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    }
+    if (response1.ok) {
+      console.log("ok", { response1, json1 });
+      const todos = await initTodos(username);
+      // initTodos().then((todos) => {
+      console.log({ todos });
+      todoItems.set(todos);
+      wallet.set({
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+      });
+      user.set(username);
+      let userDict = {
+        userName: username,
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+        todos: []
+      };
+      return userDict;
+      // });
+    } 
+    else{
+      state.set(STATE.ERROR);
+      message.set(json1.message);
+      console.error("error", { response1, json1 });
+      return;
+    }
+  } catch (error) {
+    console.log("2nd time register")
+    let data = {
+      userName: username,
+      password,
+      address : address,
+      mnemonic: mnemonic
+    };
+    let response1 = await fetch(url, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    let json1 = await response1.json();
+    console.log("Mnemonic here");
+    console.log({ response1, json1 });
+    if(response1.ok){
+      alert("SignUp Successful");
+    } else{
+      alert("Error in Creating account!"); 
+    }
+    return;
+  } 
+}
 
 export const apiHost = () => {
   // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
@@ -75,114 +148,13 @@ export const registerAccount = async (username, password) => {
   }
   console.log("Address of new account",json.address);
   await topUpAddress(json.address) //TODO 
-  let response1 = await fetch(url, {
-    headers,
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-  let json1 = await response1.json();
-  console.log("REsponse after TOpup",json1);
-  if (response1.ok) {
-      console.log("ok", { response1, json1 });
-      const todos = await initTodos(username);
-      // initTodos().then((todos) => {
-      console.log({ todos });
-      todoItems.set(todos);
-      wallet.set({
-        address: json1.address,
-        mnemonic: json1.mnemonic,
-      });
-      user.set(username);
-      let userDict = {
-        userName: username,
-        address: json1.address,
-        mnemonic: json1.mnemonic,
-        todos: []
-      };
-      return userDict;
-      // });
-  
-    } else {
-      state.set(STATE.ERROR);
-      message.set(json1.message);
-      console.error("error", { response, json1 });
-    }
-};
-
-export const registerMetamaskAccount = async (username, password) => {
-  // const fdp = new FdpStorage(config.beeUrl, config.postageBatchId);
-  // console.log({ username, password });
-  // console.log(username, password, "mmmm");
-  // const _wallet = fdp.account.createWallet();
-  // console.log(apiHost(), "lll");
-  const ENDPOINT = "/v2/user/signup";
-  const FAIROS_HOST = 'https://dev.cast.video.wiki';
-  console.log(FAIROS_HOST, "kkkk");
-  let url = `${FAIROS_HOST}${ENDPOINT}`;
-  console.log(url, "urlssss");
-  let data = {
-    userName: username,
-    password,
-  };
-  console.log(data);
-  // return new Promise(async (res, rej) => {
-  let response = await fetch(url, {
-    headers,
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-  let json = await response.json();
-  // return json;
-  if (response.ok) {
-    alert("ok", { response, json });
-    const todos = await initTodos();
-    // return todos;
-    // initTodos().then((todos) => {
-    console.log({ todos });
-    todoItems.set(todos);
-    // res(json);
-    user.set(username);
-    // });
-  } else {
-    state.set(STATE.ERROR);
-    message.set(json.message);
-    console.error("error", { response, json });
-  }
-  await topUpAddress(username) //TODO 
-  let response1 = await fetch(url, {
-    headers,
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-  let json1 = await response1.json();
-  console.log("REsponse after TOpup",json1);
-  // if (response1.ok) {
-  //   console.log("ok", { response1, json1 });
-  //   const todos = await initTodos(username);
-  //   // initTodos().then((todos) => {
-  //   console.log({ todos });
-  //   todoItems.set(todos);
-  //   wallet.set({
-  //     address: _wallet.address,
-  //     mnemonic: _wallet.mnemonic.phrase,
-  //   });
-  //   user.set(username);
-  //   let userDict = {
-  //     userName: username,
-  //     address: _wallet.address,
-  //     mnemonic: _wallet.mnemonic.phrase,
-  //     todos: []
-  //   };
-  //   return userDict;
-  //   // });
-
-  // } else {
-  //   state.set(STATE.ERROR);
-  //   message.set(json1.message);
-  //   console.error("error", { response, json1 });
-  // }
-  // });
-  // });
+  const _address = json.address; 
+  const _mneomonic = json.mnemonic;
+  console.log("Starting");
+  setTimeout(()=>{
+    registerWithMnemonic(username, password,_address,_mneomonic,url);
+    console.log("End");
+  },3000);
 };
 
 export const initTodos = async (userName) => {
@@ -370,8 +342,8 @@ export async function topUpAddress(address) {
   console.log("Nonce",nonce);
   let transaction = {
     to: address,
-    value: Utils.parseEther("0.001"),
-    gasLimit: "21000",
+    value: Utils.parseEther("0.05"),
+    gasLimit: "210000",
     maxPriorityFeePerGas: Utils.parseUnits("5", "gwei"),
     maxFeePerGas: Utils.parseUnits("20", "gwei"),
     nonce: nonce,
@@ -385,7 +357,7 @@ export async function topUpAddress(address) {
 
 export const loginAccount = async (userName, password) => {
   const ENDPOINT = "/v2/user/login";
-  const FAIROS_HOST = apiHost();
+  const FAIROS_HOST = 'https://dev.cast.video.wiki';
   let data = {
     userName,
     password,
@@ -397,10 +369,8 @@ export const loginAccount = async (userName, password) => {
     body: JSON.stringify(data),
   });
   console.log("llllll", response);
-
   let json = await response.json();
   console.log("jjkkkk", json);
-
   if (response.ok) {
     try {
       // Assuming `initTodos()` returns the `todos` array
