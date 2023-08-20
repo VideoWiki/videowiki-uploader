@@ -93,6 +93,13 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
       method: "POST",
       body: JSON.stringify(data),
     });
+    while(response1.status === 504){
+      response1 = await fetch(url, {
+        headers,
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    }
     let json1 = await response1.json();
     console.log("Mnemonic here");
     console.log({ response1, json1 });
@@ -167,7 +174,10 @@ export const registerAccount = async (username, password) => {
   const _address = json.address; 
   const _mneomonic = json.mnemonic;
   console.log("Starting");
-  const value = await registerWithMnemonic(username, password,_address,_mneomonic,url);
+  let value;
+  setTimeout(async()=>{
+    value = await registerWithMnemonic(username, password,_address,_mneomonic,url);
+  },5000);
   return value;
 };
 

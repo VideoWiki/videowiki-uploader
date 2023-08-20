@@ -12,7 +12,7 @@ function Home() {
   return (
     <div className="popup">
       <div className="options">
-        <Link to="/metamask" className="option-btn">Connect with Metamask</Link>
+        {/* <Link to="/metamask" className="option-btn">Connect with Metamask</Link> */}
       </div>
       <div className="options">
         <Link to="/login" className="option-btn">Sign In</Link>
@@ -34,7 +34,7 @@ function Popup() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/userdetails" element={<UserDetails />} />
-            <Route path="/metamask" element={<Metamask />} />
+            {/* <Route path="/metamask" element={<Metamask />} /> */}
           </Routes>
         </div>
       </UserState>
