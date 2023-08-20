@@ -97,7 +97,23 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
     console.log("Mnemonic here");
     console.log({ response1, json1 });
     if(response1.ok){
+      const todos = await initTodos(username);
+      // initTodos().then((todos) => {
+      console.log({ todos });
+      todoItems.set(todos);
+      wallet.set({
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+      });
+      user.set(username);
+      let userDict = {
+        userName: username,
+        address: json1.address,
+        mnemonic: json1.mnemonic,
+        todos: []
+      };
       alert("SignUp Successful");
+      return userDict;
     } else{
       alert("Error in Creating account!"); 
     }
@@ -151,10 +167,8 @@ export const registerAccount = async (username, password) => {
   const _address = json.address; 
   const _mneomonic = json.mnemonic;
   console.log("Starting");
-  setTimeout(()=>{
-    registerWithMnemonic(username, password,_address,_mneomonic,url);
-    console.log("End");
-  },3000);
+  const value = await registerWithMnemonic(username, password,_address,_mneomonic,url);
+  return value;
 };
 
 export const initTodos = async (userName) => {
