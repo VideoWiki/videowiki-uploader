@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
-import { loginAccount } from "../utils";
+import { loginAccount, getCookie } from "../utils";
 import { UserContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom"; // Import useHistory hook
 import "../Popup.css"; // Import the CSS file here
-
 
 const LoginForm = () => {
   const {
@@ -14,7 +13,7 @@ const LoginForm = () => {
     setUserName,
     setWalletAddress,
     setMemonic,
-    setTodos
+    setTodos,
   } = useContext(UserContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -34,21 +33,25 @@ const LoginForm = () => {
       return;
     }
     try {
-      
+      let cookie = await getCookie(email, password);
+      cookie = cookie.result;
+      cookie = cookie.split("=");
+      console.log(cookie);
+      document.cookie = "fairOS-dfs=" + cookie[1] + "=";
       const res = await loginAccount(email, password);
-  
+
       setUserName(res.userName);
       setWalletAddress(res.address);
       setTodos(res.todoItems);
-  
+
       // Redirect to UserDetails component
       navigate("/userdetails");
-  
+
       // Reset form fields
       setEmail("");
       setPassword("");
     } catch (error) {
-      console.log("Error",error);
+      console.log("Error", error);
     }
   };
 
@@ -65,16 +68,15 @@ const LoginForm = () => {
       </div>
       <div className="form-group">
         <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={handlePasswordChange}
+        />
       </div>
       <button className="login-button" onClick={handleSubmit}>
         Login
       </button>
-      
     </div>
   );
 };

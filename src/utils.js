@@ -19,11 +19,12 @@ const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
 const headers = {
   Accept: "application/json",
   "Content-Type": "application/json",
-}; 
+};
 
 // const { API_KEY, PRIVATE_KEY } = process.env;
-const API_KEY = '8OvbHJsV8ry1tnkNki_RfQ9836-5zhKn';
-const PRIVATE_KEY = '6179993d608b4a4a5acfa019e1624b3a0a12337884865c3c633d2d682b134faf';
+const API_KEY = "8OvbHJsV8ry1tnkNki_RfQ9836-5zhKn";
+const PRIVATE_KEY =
+  "6179993d608b4a4a5acfa019e1624b3a0a12337884865c3c633d2d682b134faf";
 const settings = {
   apiKey: API_KEY,
   network: Network.ETH_SEPOLIA,
@@ -32,13 +33,25 @@ const alchemy = new Alchemy(settings);
 
 let fundWallet = new Wallet(PRIVATE_KEY);
 
-const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
+export const apiHost = () => {
+  // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
+  let url = "http://localhost:3000/api";
+  return url;
+};
+// const apiHost() = "http://localhost:9090";
+const registerWithMnemonic = async (
+  username,
+  password,
+  address,
+  mnemonic,
+  url
+) => {
   try {
     let data = {
       userName: username,
       password,
-      address : address,
-      mnemonic: mnemonic
+      address: address,
+      mnemonic: mnemonic,
     };
     let response1 = await fetch(url, {
       headers,
@@ -47,7 +60,7 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
     });
     let json1 = await response1.json();
     console.log("Mnemonic here");
-    while(response1.status === 402){
+    while (response1.status === 402) {
       response1 = await fetch(url, {
         headers,
         method: "POST",
@@ -69,31 +82,30 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
         userName: username,
         address: json1.address,
         mnemonic: json1.mnemonic,
-        todos: []
+        todos: [],
       };
       return userDict;
       // });
-    } 
-    else{
+    } else {
       state.set(STATE.ERROR);
       message.set(json1.message);
       console.error("error", { response1, json1 });
       return;
     }
   } catch (error) {
-    console.log("2nd time register")
+    console.log("2nd time register");
     let data = {
       userName: username,
       password,
-      address : address,
-      mnemonic: mnemonic
+      address: address,
+      mnemonic: mnemonic,
     };
     let response1 = await fetch(url, {
       headers,
       method: "POST",
       body: JSON.stringify(data),
     });
-    while(response1.status === 504){
+    while (response1.status === 504) {
       response1 = await fetch(url, {
         headers,
         method: "POST",
@@ -103,7 +115,7 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
     let json1 = await response1.json();
     console.log("Mnemonic here");
     console.log({ response1, json1 });
-    if(response1.ok){
+    if (response1.ok) {
       const todos = await initTodos(username);
       // initTodos().then((todos) => {
       console.log({ todos });
@@ -117,27 +129,46 @@ const registerWithMnemonic=async (username, password,address,mnemonic,url)=>{
         userName: username,
         address: json1.address,
         mnemonic: json1.mnemonic,
-        todos: []
+        todos: [],
       };
       alert("SignUp Successful");
       return userDict;
-    } else{
-      alert("Error in Creating account!"); 
+    } else {
+      alert("Error in Creating account!");
     }
     return;
-  } 
-}
-
-export const apiHost = () => {
-  // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
-  let url = "https://fairos.video.wiki/api"
-  return url;
+  }
 };
-// const apiHost() = "http://localhost:9090";
+
+export const getCookie = async (username, password) => {
+  const body = { username: username, password: "qwertyuiopasdfghjkl" };
+  const options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  console.log("dsad", options);
+  try {
+    console.log(1);
+    const response = await fetch(
+      "https:/api.video.wiki/api/swarm/login?" + new URLSearchParams(body),
+      options
+    );
+    const json = await response.json();
+    if (response.ok) {
+      localStorage.setItem("fairOs", json.result.trim());
+      return json;
+    } else {
+    }
+  } catch (e) {
+    console.log(3);
+  }
+};
 
 export const registerAccount = async (username, password) => {
   const ENDPOINT = "/v2/user/signup";
-  const FAIROS_HOST = 'https://dev.cast.video.wiki';
+  const FAIROS_HOST = "https://dev.cast.video.wiki";
   console.log(FAIROS_HOST, "kkkk");
   let url = `${FAIROS_HOST}${ENDPOINT}`;
   console.log(url, "urlssss");
@@ -169,15 +200,21 @@ export const registerAccount = async (username, password) => {
     message.set(json.message);
     console.error("error", { response, json });
   }
-  console.log("Address of new account",json.address);
-  await topUpAddress(json.address) //TODO 
-  const _address = json.address; 
+  console.log("Address of new account", json.address);
+  await topUpAddress(json.address); //TODO
+  const _address = json.address;
   const _mneomonic = json.mnemonic;
   console.log("Starting");
   let value;
-  setTimeout(async()=>{
-    value = await registerWithMnemonic(username, password,_address,_mneomonic,url);
-  },5000);
+  setTimeout(async () => {
+    value = await registerWithMnemonic(
+      username,
+      password,
+      _address,
+      _mneomonic,
+      url
+    );
+  }, 5000);
   return value;
 };
 
@@ -265,7 +302,7 @@ export const listTodos = async (userName) => {
     podName: userName,
     dirPath: "/" + userName,
   };
-
+  console.log(data, "data");
   let ENDPOINT = "/v1/dir/ls";
   const FAIROS_HOST = apiHost();
 
@@ -282,9 +319,11 @@ export const listTodos = async (userName) => {
 
     if (response.ok) {
       console.log({ response, json }, "33336666");
-      let res = await Promise.all((json.files || []).map(async ({ name }) => {
-        return await readTodo(name, userName);
-      }));
+      let res = await Promise.all(
+        (json.files || []).map(async ({ name }) => {
+          return await readTodo(name, userName);
+        })
+      );
 
       return res;
     } else {
@@ -304,7 +343,7 @@ export const readTodo = async (todofile, userName) => {
     podName: userName,
     filePath: "/" + userName + "/" + todofile,
   };
-  console.warn(data, "here33333")
+  console.warn(data, "here33333");
   let FAIROS_HOST = apiHost();
   let ENDPOINT = "/v1/file/download";
 
@@ -317,13 +356,13 @@ export const readTodo = async (todofile, userName) => {
     }
   );
   let json = await response.blob();
-  console.warn("here3333344444")
+  console.warn("here3333344444");
   if (response.ok) {
     console.log({ response, json });
-    console.warn("here triggered", response, json)
+    console.warn("here triggered", response, json);
     let jsonResponse = {
       name: todofile,
-      blob: json
+      blob: json,
     };
     return jsonResponse;
   } else {
@@ -363,7 +402,7 @@ export async function topUpAddress(address) {
     fundWallet.address,
     "latest"
   );
-  console.log("Nonce",nonce);
+  console.log("Nonce", nonce);
   let transaction = {
     to: address,
     value: Utils.parseEther("0.05"),
@@ -381,7 +420,7 @@ export async function topUpAddress(address) {
 
 export const loginAccount = async (userName, password) => {
   const ENDPOINT = "/v2/user/login";
-  const FAIROS_HOST = 'https://dev.cast.video.wiki';
+  const FAIROS_HOST = "https://dev.cast.video.wiki";
   let data = {
     userName,
     password,
@@ -398,9 +437,9 @@ export const loginAccount = async (userName, password) => {
   if (response.ok) {
     try {
       // Assuming `initTodos()` returns the `todos` array
-      let todos = await initTodos();
+      let todos = await initTodos(userName);
       // Convert the Blob array to an array of data URLs
-      console.warn(todos, "dhudififii")
+      console.warn(todos, "dhudififii");
       const dataURLs = await Promise.all(
         todos.map((todo) => {
           return {
