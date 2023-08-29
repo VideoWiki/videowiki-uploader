@@ -466,7 +466,7 @@ export const addTodo = async (todo, todos, userName) => {
   });
 
   const formData = new FormData();
-  formData.append("files", blob, "todo_" + todo.id);
+  formData.append("files", file);
   formData.set("podName", userName);
   formData.set("dirPath", "/" + userName);
   formData.set("blockSize", "1Mb");
@@ -479,11 +479,10 @@ export const addTodo = async (todo, todos, userName) => {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
   });
-
   let json = await response.json();
   if (response.ok) {
     let jsonResponse = {
-      name: "todo_" + todo.id,
+      name: file.name,
       blob: blob,
       type: file.type, // Add the type property
       dataURL: URL.createObjectURL(blob), // Set the 'dataURL' property
