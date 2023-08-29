@@ -36,7 +36,7 @@ let fundWallet = new Wallet(PRIVATE_KEY);
 
 export const apiHost = () => {
   // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
-  let url = "http://localhost:3000/api";
+  let url = "https://dev.cast.video.wiki";
   return url;
 };
 // const apiHost() = "http://localhost:9090";
