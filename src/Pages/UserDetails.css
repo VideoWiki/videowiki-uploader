@@ -2,7 +2,8 @@
 
 .userDetails {
   width: 90%;
-  height: 75vh;
+  min-height: 75vh;
+  max-height: fit-content;
 }
 
 .user-details-container {
