@@ -19,6 +19,7 @@ const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
 const headers = {
   Accept: "application/json",
   "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
 };
 
 // const { API_KEY, PRIVATE_KEY } = process.env;
@@ -70,7 +71,6 @@ const registerWithMnemonic = async (
     if (response1.ok) {
       console.log("ok", { response1, json1 });
       const todos = await initTodos(username);
-      // initTodos().then((todos) => {
       console.log({ todos });
       todoItems.set(todos);
       wallet.set({
@@ -117,7 +117,6 @@ const registerWithMnemonic = async (
     console.log({ response1, json1 });
     if (response1.ok) {
       const todos = await initTodos(username);
-      // initTodos().then((todos) => {
       console.log({ todos });
       todoItems.set(todos);
       wallet.set({
@@ -141,7 +140,7 @@ const registerWithMnemonic = async (
 };
 
 export const getCookie = async (username, password) => {
-  const body = { username: username, password: "qwertyuiopasdfghjkl" };
+  const body = { username: username, password: password };
   const options = {
     method: "GET",
     headers: {
@@ -166,7 +165,7 @@ export const getCookie = async (username, password) => {
   }
 };
 
-export const registerAccount = async (username, password) => {
+export const registerAccount = async (username, password, mnemonic) => {
   const ENDPOINT = "/v2/user/signup";
   const FAIROS_HOST = "https://dev.cast.video.wiki";
   console.log(FAIROS_HOST, "kkkk");
@@ -176,6 +175,7 @@ export const registerAccount = async (username, password) => {
     userName: username,
     password,
   };
+  if (mnemonic) data.mnemonic = mnemonic;
   console.log(data);
   // return new Promise(async (res, rej) => {
   let response = await fetch(url, {
@@ -184,38 +184,16 @@ export const registerAccount = async (username, password) => {
     body: JSON.stringify(data),
   });
   let json = await response.json();
-  // return json;
-  if (response.ok) {
-    alert("ok", { response, json });
-    const todos = await initTodos();
-    // return todos;
-    // initTodos().then((todos) => {
-    console.log({ todos });
-    todoItems.set(todos);
-    // res(json);
-    user.set(username);
-    // });
-  } else {
-    state.set(STATE.ERROR);
-    message.set(json.message);
-    console.error("error", { response, json });
-  }
   console.log("Address of new account", json.address);
-  await topUpAddress(json.address); //TODO
-  const _address = json.address;
-  const _mneomonic = json.mnemonic;
-  console.log("Starting");
-  let value;
-  setTimeout(async () => {
-    value = await registerWithMnemonic(
-      username,
-      password,
-      _address,
-      _mneomonic,
-      url
-    );
-  }, 5000);
-  return value;
+  if (!mnemonic) {
+    await topUpAddress(json.address); //TODO
+  }
+  console.log(response.status, "status");
+  if (response.status === 402) {
+    return { status: 402, mnemonic: json.mnemonic };
+  } else {
+    return { status: response.status, address: json.address };
+  }
 };
 
 export const initTodos = async (userName) => {
@@ -238,6 +216,7 @@ export const createAppPod = async (userName) => {
 
   const ENDPOINT = "/v1/pod/new";
   const FAIROS_HOST = apiHost();
+  console.log(headers);
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -248,6 +227,7 @@ export const createAppPod = async (userName) => {
   if (response.ok) {
     console.log({ response, json });
   } else {
+    if (json.message === "jwt: invalid token") throw json;
     console.error({ response, json });
   }
 };
@@ -296,6 +276,7 @@ export const createAppDir = async (userName) => {
 export const listTodos = async (userName) => {
   let headers = {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   };
 
   let data = {
@@ -337,6 +318,7 @@ export const listTodos = async (userName) => {
 export const readTodo = async (todofile, userName) => {
   let headers = {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   };
 
   let data = {
@@ -428,12 +410,17 @@ export const loginAccount = async (userName, password) => {
   console.log("ppppp", userName, password);
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
-    headers,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
   console.log("llllll", response);
   let json = await response.json();
   console.log("jjkkkk", json);
+  headers.Authorization = `Bearer ${json.accessToken}`;
+  localStorage.setItem("accessToken", json.accessToken);
   if (response.ok) {
     try {
       // Assuming `initTodos()` returns the `todos` array
@@ -449,31 +436,10 @@ export const loginAccount = async (userName, password) => {
           };
         })
       );
-
-      // Initialize 'todoItems' with the data URLs
-      todoItems.set(dataURLs);
-      console.warn(dataURLs, "whwhwhwh");
-      console.warn(todos, "lllhgff");
-      // Initializing the 'todoItems' variable with the 'todos' array
-      todoItems.set(todos);
-      state.set(STATE.INFO);
-      wallet.set({ address: json.address, mnemonic: "" });
-      user.set(userName);
-
-      // Constructing the array of objects with the desired values
-      let todosArray = dataURLs.map((todo, index) => {
-        return {
-          name: todos[index].name,
-          dataURL: todo.dataURL,
-          type: todo.type, // Include the 'type' in the todosArray
-        };
-      });
-
-      console.log(todosArray, "array of todos");
       return {
         userName: userName,
         address: json.address,
-        todoItems: todosArray,
+        todoItems: dataURLs,
       };
     } catch (error) {
       console.error("Error initializing todos", error);
@@ -511,6 +477,9 @@ export const addTodo = async (todo, todos, userName) => {
     credentials: "include",
     method: "POST",
     body: formData,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
   });
 
   let json = await response.json();

@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { registerAccount } from "../utils";
+import React, { useState, useContext, useEffect } from "react";
+import { getCookie, initTodos, loginAccount, registerAccount } from "../utils";
 import { UserContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom";
 import "../Popup.css";
@@ -19,7 +19,12 @@ const SignupForm = () => {
     setTodos,
   } = useContext(UserContext);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      navigate("/userdetails");
+      return;
+    }
+  }, []);
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -27,8 +32,7 @@ const SignupForm = () => {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (mnemonic) => {
     if (email === "" || password === "") {
       alert("Please enter a username and password.");
       return;
@@ -37,20 +41,36 @@ const SignupForm = () => {
     setLoading(true); // Show the loader
 
     try {
-      const res = await registerAccount(email, password);
-
-      setMemonic(res.mnemonic);
-      setUserName(res.userName);
+      const res = await registerAccount(email, password, mnemonic);
+      console.log(res);
+      if (res.status === 402) {
+        setTimeout(() => handleSubmit(res.mnemonic), 4000);
+        return;
+      }
+      const todos = await loginAccount(email, password);
+      const tod = await initTodos(email);
+      console.log(tod);
+      setMemonic(mnemonic);
+      setUserName(email);
       setWalletAddress(res.address);
-      setTodos(res.todos);
+      setTodos([]);
 
       setLoading(false); // Hide the loader
-      alert(JSON.stringify(res));
+      // alert(JSON.stringify(res));
       navigate("/userdetails");
     } catch (error) {
       setLoading(false); // Hide the loader in case of an error
       console.error("Error registering account:", error);
-      alert("Error creating user account.");
+      console.log(JSON.stringify(error));
+      if (JSON.stringify(error) === "{}") {
+        console.log("error");
+        handleSubmit(mnemonic);
+      } else {
+        console.log("else");
+        handleSubmit(mnemonic);
+      }
+      console.log(error.response);
+      // alert("Error creating user account.");
     }
 
     // Reset form fields
@@ -59,28 +79,32 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="login-form">
-      <p>Signup</p>
-      <div className="form-group">
-        <input
-          type="email"
-          placeholder="Enter username"
-          value={email}
-          onChange={handleEmailChange}
-        />
-      </div>
-      <div className="form-group">
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-      </div>
+    <div className="popup container">
+      <h1 className="title">VideoWiki Uploader</h1>
+      <div className="login-form">
+        <p>Signup</p>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Enter username"
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
 
-      <button className="login-button" onClick={handleSubmit}>
-        {loading ? "Creating Account..." : "Signup"} {/* Conditional button text */}
-      </button>
+        <button className="login-button" onClick={() => handleSubmit()}>
+          {loading ? "Creating Account..." : "Signup"}{" "}
+          {/* Conditional button text */}
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { loginAccount, getCookie } from "../utils";
 import { UserContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom"; // Import useHistory hook
@@ -16,6 +16,12 @@ const LoginForm = () => {
     setTodos,
   } = useContext(UserContext);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      navigate("/userdetails");
+      return;
+    }
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,10 +40,10 @@ const LoginForm = () => {
     }
     try {
       let cookie = await getCookie(email, password);
-      cookie = cookie.result;
-      cookie = cookie.split("=");
-      console.log(cookie);
-      document.cookie = "fairOS-dfs=" + cookie[1] + "=";
+      // cookie = cookie.result;
+      // cookie = cookie.split("=");
+      // console.log(cookie);
+      // document.cookie = "fairOS-dfs=" + cookie[1] + "=";
       const res = await loginAccount(email, password);
 
       setUserName(res.userName);
@@ -56,27 +62,30 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-form">
-      <p>Login</p>
-      <div className="form-group">
-        <input
-          type="email"
-          placeholder="Enter username"
-          value={email}
-          onChange={handleEmailChange}
-        />
+    <div className="popup container">
+      <h1 className="title">VideoWiki Uploader</h1>
+      <div className="login-form">
+        <p>Login</p>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Enter username"
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+        <button className="login-button" onClick={handleSubmit}>
+          Login
+        </button>
       </div>
-      <div className="form-group">
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-      </div>
-      <button className="login-button" onClick={handleSubmit}>
-        Login
-      </button>
     </div>
   );
 };

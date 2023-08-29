@@ -65,3 +65,7 @@ code {
 .option-btn:active {
   background-color: #003f81;
 }
+
+nav {
+  border: 1px solid;
+}

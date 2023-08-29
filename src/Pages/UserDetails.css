@@ -1,17 +1,24 @@
 /* UserDetails.css */
 
+.userDetails {
+  width: 90%;
+  height: 75vh;
+}
+
 .user-details-container {
   padding: 20px;
+  padding-bottom: 30px;
+  height: 100%;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
-  height: 600;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .user-info {
   margin-bottom: 20px;
 }
+
 .wallet-address {
   /* Add your styling for wallet address to limit its width or add ellipsis */
   word-wrap: break-word;
@@ -22,8 +29,10 @@
 
 .user-todos-container {
   /* Add your styling for user-todos section */
-  max-height: 400px; /* Set the maximum height of the container */
-  overflow-y: auto; /* Enable vertical scrollbar when content exceeds the height */
+  max-height: 400px;
+  /* Set the maximum height of the container */
+  overflow-y: auto;
+  /* Enable vertical scrollbar when content exceeds the height */
 }
 
 .user-info h2 {
@@ -135,6 +144,7 @@
 .upload-button:active {
   background-color: #003f81;
 }
+
 .select-button {
   padding: 10px 20px;
   background-color: #007bff;
@@ -152,18 +162,23 @@
 .select-button:active {
   background-color: #003f81;
 }
+
 .selected {
   background-color: #28a745;
 }
+
 /* Additional styling to center the "Select Files" button */
 .file-label {
   display: flex;
   align-items: center;
 }
+
 .todo-actions {
   display: flex;
-  justify-content: space-between; /* Add space between the buttons */
-  align-items: center; /* Center the buttons vertically */
+  justify-content: space-between;
+  /* Add space between the buttons */
+  align-items: center;
+  /* Center the buttons vertically */
   margin-top: 10px;
 }
 
@@ -200,4 +215,21 @@
 
 .todo-actions button.download-button:active {
   background-color: #003f81;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.spaceBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cursor {
+  cursor: pointer;
 }
