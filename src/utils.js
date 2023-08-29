@@ -332,7 +332,6 @@ export const readTodo = async (todofile, userName) => {
   let response = await fetch(
     FAIROS_HOST + ENDPOINT + "?" + new URLSearchParams(data),
     {
-      credentials: "include",
       method: "GET",
       headers,
     }
@@ -474,7 +473,6 @@ export const addTodo = async (todo, todos, userName) => {
 
   const ENDPOINT = "/v1/file/upload";
   let response = await fetch(apiHost() + ENDPOINT, {
-    credentials: "include",
     method: "POST",
     body: formData,
     headers: {
@@ -508,7 +506,6 @@ export const deleteTodo = async (deleteTodoName, todos, userName) => {
   const ENDPOINT = "/v1/file/delete";
 
   const response = await fetch(FAIROS_HOST + ENDPOINT, {
-    credentials: "include",
     method: "DELETE",
     headers,
     body: JSON.stringify(data),
@@ -533,7 +530,6 @@ export const deleteTodo = async (deleteTodoName, todos, userName) => {
 //   const ENDPOINT = "/v1/file/download";
 
 //   const response = await fetch(FAIROS_HOST + ENDPOINT, {
-//     credentials: "include",
 //     method: "GET",
 //     headers,
 //     body: JSON.stringify(data),
@@ -562,7 +558,6 @@ export const downloadTodo = async (downloadTodoName, todos, userName) => {
 
   try {
     const response = await fetch(url, {
-      credentials: "include",
       method: "GET",
       headers: headers,
     });
