@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# videowiki-uploader
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the videowiki-uploader Git repository! This project aims to provide a decentralized solution for storing and uploading videos using the Swarm decentralized storage network. This README will guide you through the process of setting up and running the project, explain the advantages of using decentralized storage with Swarm, and provide additional resources for a step-by-step guide and related repositories.
 
-## Available Scripts
+## Why Use Decentralized Storage with Swarm?
 
-In the project directory, you can run:
+Decentralized storage offers several benefits compared to traditional centralized cloud storage solutions:
 
-### `npm start`
+- **Data Redundancy**: Decentralized storage systems like Swarm store data across a network of nodes, ensuring redundancy and data availability even if some nodes go offline.
+- **Censorship Resistance**: Since the storage is distributed and encrypted, it's harder to censor or control the stored content.
+- **Security**: Data is encrypted and spread across multiple nodes, reducing the risk of data breaches.
+- **Cost-Efficiency**: Decentralized storage can potentially be more cost-effective than traditional cloud storage, especially for large-scale storage needs.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Follow these steps to set up and initialize the VideoWikiUploader project:
 
-### `npm test`
+1. **Clone the Repository**: Start by cloning this repository to your local machine
+2. **Install Modules**: Navigate to the project directory and install the required modules using npm:
+```
+cd VideoWikiUploader
+npm install
+```
+3. **Start the Server**: Once the modules are installed, you can start the server using the following command:
+`npm start`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+   
+Note: Make sure you have Node.js version 18.0.0 or later installed.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Additional Resources
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+For a comprehensive step-by-step guide on setting up the backend server for VideoWikiUploader, please refer to the following blog post: [VideoWikiUploader Backend Installation Guide](https://medium.com/@amanb1145/37926ddee0fb).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To upload videos to the cloud for backup, you can utilize the VideoWiki Storage repository available at: [VideoWiki Storage Repository](https://github.com/VideoWiki/vw_storages).
 
-### `npm run eject`
+## About Extension
+Additionally, there exists an accompanying extension that can be downloaded from the repository at [VideoWiki Extension](https://github.com/VideoWiki/extension). To integrate the extension, download the repository and follow these steps: Open the Chrome browser's "Manage Extensions" page, enable "Developer mode," click "Load unpacked," and select the downloaded folder.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Contributing
+    
+We welcome contributions to the videowiki-uploader project! If you find any issues, have suggestions, or want to add features, feel free to open issues and pull requests on the GitHub repository.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Thank you for your interest in videowiki-uploader! If you have any questions or need further assistance, please don't hesitate to reach out. Happy uploading!
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
