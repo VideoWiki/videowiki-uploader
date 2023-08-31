@@ -2,6 +2,7 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "./Context/contexts";
 import "./UserDetails.css";
+import swarm from '../Assets/logo2.jpeg';
 import { addTodo, deleteTodo, downloadTodo, initTodos } from "../utils";
 import { calculateFileInfo } from "../PriceCalculator/calculateFileInfo";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -298,7 +299,7 @@ const UserDetails = () => {
             </label>
             {selectedFiles.length ? (
               <button onClick={handleFileUpload} className="upload-button">
-                Upload
+                <img src={swarm} alt="logo" /><text>Upload to Swarm</text>
               </button>
             ) : null}
             {uploading && <p>Uploading...</p>}
