@@ -1,29 +1,24 @@
 import React, { useState, useContext, useEffect } from "react";
-import { loginAccount, getCookie } from "../utils";
-import { UserContext } from "./Context/contexts";
+import { listTodos, loginAccount } from "../utils";
+import { UserContext, StepContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom"; // Import useHistory hook
 import "../Popup.css"; // Import the CSS file here
+import Loader from "./Loader/Loader";
 
 const LoginForm = () => {
-  const {
-    userName,
-    walletAddress,
-    memonic,
-    todos,
-    setUserName,
-    setWalletAddress,
-    setMemonic,
-    setTodos,
-  } = useContext(UserContext);
+  const { setUserName, setWalletAddress, setTodos } = useContext(UserContext);
+  const { step, setStep, setLoad, load } = useContext(StepContext);
+  console.log(step);
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
-      navigate("/userdetails");
+      // navigate("/userdetails");
       return;
     }
   }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [text, setText] = useState("");
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -39,17 +34,25 @@ const LoginForm = () => {
       return;
     }
     try {
-      let cookie = await getCookie(email, password);
-      // cookie = cookie.result;
-      // cookie = cookie.split("=");
-      // console.log(cookie);
-      // document.cookie = "fairOS-dfs=" + cookie[1] + "=";
+      setLoad(true);
+      setStep(1);
       const res = await loginAccount(email, password);
-
+      console.log("hello world", res);
+      setStep(2);
+      const list = await listTodos(email);
+      const dataUrls = list.map((todo) => {
+        return {
+          name: todo.name,
+          dataURL: URL.createObjectURL(todo.blob),
+          type: todo.blob.type, // Add the 'type' of the todo blob here
+        };
+      });
+      console.log(dataUrls);
+      setStep(4);
+      setTodos(dataUrls);
       setUserName(res.userName);
       setWalletAddress(res.address);
-      setTodos(res.todoItems);
-
+      setLoad(false);
       // Redirect to UserDetails component
       navigate("/userdetails");
 
@@ -57,10 +60,22 @@ const LoginForm = () => {
       setEmail("");
       setPassword("");
     } catch (error) {
+      // setLoad(false);
       console.log("Error", error);
+      setText(error.message);
     }
   };
-
+  if (load) {
+    return (
+      <Loader
+        heading="Logging In"
+        steps={[
+          { title: "Logging In", success: "Logged in successfully" },
+          { title: "Loading files", success: "Files Load successfully" },
+        ]}
+      />
+    );
+  }
   return (
     <div className="popup container">
       <h1 className="title">VideoWiki Uploader</h1>
@@ -82,6 +97,7 @@ const LoginForm = () => {
             onChange={handlePasswordChange}
           />
         </div>
+        <p className="error">{text}</p>
         <button className="login-button" onClick={handleSubmit}>
           Login
         </button>

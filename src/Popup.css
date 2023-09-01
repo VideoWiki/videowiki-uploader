@@ -38,6 +38,10 @@ body {
   box-sizing: border-box;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .title {
   font-size: 24px;
   font-weight: bold;
@@ -119,6 +123,12 @@ body {
 
 .form-group {
   margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
 input {

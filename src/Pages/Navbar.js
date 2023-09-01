@@ -6,7 +6,7 @@ const Navbar = () => {
   const signOut = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
-    navigate("/login");
+    navigate("/");
   };
   return (
     <nav>
