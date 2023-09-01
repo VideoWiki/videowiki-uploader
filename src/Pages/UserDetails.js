@@ -3,7 +3,13 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "./Context/contexts";
 import "./UserDetails.css";
 import swarm from "../Assets/logo2.jpeg";
-import { addTodo, deleteTodo, downloadTodo, initTodos } from "../utils";
+import {
+  addTodo,
+  deleteTodo,
+  downloadTodo,
+  initTodos,
+  listTodos,
+} from "../utils";
 import { calculateFileInfo } from "../PriceCalculator/calculateFileInfo";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
@@ -59,7 +65,7 @@ const UserDetails = () => {
   const getTodos = async (username) => {
     setLoading(true);
     try {
-      const todos = await initTodos(username);
+      const todos = await listTodos(username);
       setLoading(false);
       console.log("todo", todos);
       const dataUrls = todos.map((todo) => {
@@ -202,6 +208,7 @@ const UserDetails = () => {
             aria-label="Loading Spinner"
             data-testid="loader"
           />
+          <h2 className="text-center">Loading Files</h2>
         </div>
       ) : (
         <div className="user-details-container">
@@ -223,6 +230,47 @@ const UserDetails = () => {
               </p>
             )}
           </div>
+          <div className="file-upload">
+            {isFilesSelected && (
+              <div className="selected-file-info">
+                <h3>Selected File:</h3>
+              </div>
+            )}
+
+            <label htmlFor="todo" className="file-label">
+              {isFilesSelected ? selectedFileName : "Select Files"}
+              <input
+                type="file"
+                id="todo"
+                ref={fileInputRef}
+                multiple
+                accept="image/*, video/*"
+                onChange={handleFileSelection}
+              />
+            </label>
+            {selectedFiles.length ? (
+              <button onClick={handleFileUpload} className="upload-button">
+                <img src={swarm} alt="logo" />
+                <text>Upload to Swarm</text>
+              </button>
+            ) : null}
+            {uploading && <p>Uploading...</p>}
+          </div>
+          {Object.keys(fileInfo).length > 0 && (
+            <div className="file-info">
+              <h3>File Information:</h3>
+              <p>Name: {fileInfo.name}</p>
+              <p>ttl: {fileInfo.ttl} bytes</p>
+              <p>Size in KB: {fileInfo.sizeKB} KB</p>
+              <p>Size in MB: {fileInfo.sizeMB} MB</p>
+              <p>Type: {fileInfo.type}</p>
+              <p>chunks: {fileInfo.chunks}</p>
+              <p>depth: {fileInfo.depth}</p>
+              <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
+              <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p>
+              {/* Display other calculated properties as needed */}
+            </div>
+          )}
           <div className="user-todos-container">
             {uniqueTodoTypes.map((type, typeIndex) => (
               <div key={typeIndex}>
@@ -279,47 +327,6 @@ const UserDetails = () => {
               </div>
             ))}
           </div>
-          <div className="file-upload">
-            {isFilesSelected && (
-              <div className="selected-file-info">
-                <h3>Selected File:</h3>
-              </div>
-            )}
-
-            <label htmlFor="todo" className="file-label">
-              {isFilesSelected ? selectedFileName : "Select Files"}
-              <input
-                type="file"
-                id="todo"
-                ref={fileInputRef}
-                multiple
-                accept="image/*, video/*"
-                onChange={handleFileSelection}
-              />
-            </label>
-            {selectedFiles.length ? (
-              <button onClick={handleFileUpload} className="upload-button">
-                <img src={swarm} alt="logo" />
-                <text>Upload to Swarm</text>
-              </button>
-            ) : null}
-            {uploading && <p>Uploading...</p>}
-          </div>
-          {Object.keys(fileInfo).length > 0 && (
-            <div className="file-info">
-              <h3>File Information:</h3>
-              <p>Name: {fileInfo.name}</p>
-              <p>ttl: {fileInfo.ttl} bytes</p>
-              <p>Size in KB: {fileInfo.sizeKB} KB</p>
-              <p>Size in MB: {fileInfo.sizeMB} MB</p>
-              <p>Type: {fileInfo.type}</p>
-              <p>chunks: {fileInfo.chunks}</p>
-              <p>depth: {fileInfo.depth}</p>
-              <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
-              <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p>
-              {/* Display other calculated properties as needed */}
-            </div>
-          )}
         </div>
       )}
     </div>
