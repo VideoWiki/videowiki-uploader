@@ -69,6 +69,9 @@ const UserDetails = () => {
     setLoading(true);
     try {
       const todos = await listTodos(username);
+      if (todos.message === "expired") {
+        throw todos;
+      }
       setLoading(false);
       console.log("todo", todos);
       const dataUrls = todos.map((todo) => {
@@ -86,8 +89,9 @@ const UserDetails = () => {
       console.log(`TODOS`, todos);
     } catch (e) {
       console.log(e, "err");
-      if (e.message === "jwt: invalid token") {
+      if (e.message === "jwt: invalid token" || e.message === "expired") {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
         navigate("/login");
       }
     }

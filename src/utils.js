@@ -169,6 +169,9 @@ export const listTodos = async (userName) => {
 
       return res;
     } else {
+      if (json.message === "jwt: invalid token") {
+        return { message: "expired" };
+      }
       console.error({ response, json });
     }
   } catch (error) {
