@@ -52,7 +52,11 @@ const Wallet = () => {
       console.log("dsa", res);
       setLoad("Login");
       setStep(2);
-      const list = await initTodos(username);
+      await createAppPod(username);
+      await openAppPod(username);
+      setStep(3);
+      await createAppDir(username);
+      const list = await listTodos(username);
       const dataUrls = list.map((todo) => {
         return {
           name: todo.name,

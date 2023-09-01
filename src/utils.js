@@ -276,15 +276,9 @@ export const loginAccount = async (userName, password) => {
   return null;
 };
 
-export const addTodo = async (todo, todos, userName) => {
-  console.log({ todo, todos });
+export const addTodo = async (todos, userName, file) => {
   console.log("aaaaaaaaa");
-  const fileInput = document.getElementById("todo");
-  const file = fileInput.files[0];
   console.log(file.type);
-  if (!file) {
-    return todos;
-  }
 
   const blob = new Blob([file], {
     type: file.type,

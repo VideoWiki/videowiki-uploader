@@ -1,6 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { render } from "react-dom";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { UserState } from "./Pages/Context/State/UserState";
 import { StepState } from "./Pages/Context/State/StepState";
 import UserDetails from "./Pages/UserDetails";
@@ -15,6 +21,13 @@ import Loader from "./Pages/Loader/Loader";
 
 function Home() {
   const { load } = useContext(StepContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      navigate("/userdetails");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (load === "SignIn") {
     return (
       <Loader
@@ -37,6 +50,7 @@ function Home() {
         heading="Logging In"
         steps={[
           { title: "Logging In", success: "Logged in successfully" },
+          { title: "Opening Pod", success: "Pod opened successfully" },
           { title: "Loading files", success: "Files Load successfully" },
         ]}
       />

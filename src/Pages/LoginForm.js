@@ -1,5 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
-import { initTodos, listTodos, loginAccount } from "../utils";
+import {
+  createAppDir,
+  createAppPod,
+  initTodos,
+  listTodos,
+  loginAccount,
+  openAppPod,
+} from "../utils";
 import { UserContext, StepContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom"; // Import useHistory hook
 import "../Popup.css"; // Import the CSS file here
@@ -39,7 +46,11 @@ const LoginForm = () => {
       const res = await loginAccount(email, password);
       console.log("hello world", res);
       setStep(2);
-      const list = await initTodos(email);
+      await createAppPod(email);
+      await openAppPod(email);
+      setStep(3);
+      await createAppDir(email);
+      const list = await listTodos(email);
       const dataUrls = list.map((todo) => {
         return {
           name: todo.name,
@@ -53,6 +64,7 @@ const LoginForm = () => {
       setUserName(res.userName);
       setWalletAddress(res.address);
       setLoad(false);
+      setStep(1);
       // Redirect to UserDetails component
       navigate("/userdetails");
 
@@ -71,6 +83,7 @@ const LoginForm = () => {
         heading="Logging In"
         steps={[
           { title: "Logging In", success: "Logged in successfully" },
+          { title: "Opening Pod", success: "Pod opened successfully" },
           { title: "Loading files", success: "Files Load successfully" },
         ]}
       />

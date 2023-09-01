@@ -39,6 +39,9 @@ const UserDetails = () => {
   const [isFilesSelected, setIsFilesSelected] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
   const [fileInfo, setFileInfo] = useState({});
+  const [url, setUrl] = useState("");
+  const [getInfo, setGetInfo] = useState(true);
+  const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -53,7 +56,7 @@ const UserDetails = () => {
       setWalletAddress(storedUser.walletAddress);
       setMemonic(storedUser.memonic);
       setTodos(storedUser.todos);
-      getTodos(storedUser.userName);
+      // getTodos(storedUser.userName);
     } else {
       localStorage.setItem(
         "user",
@@ -104,7 +107,7 @@ const UserDetails = () => {
     setSelectedFiles(files);
     setIsFilesSelected(true);
     setSelectedFileName(files[0].name);
-
+    setIsFile(true);
     if (files.length > 0) {
       const file = files[0];
       const ttl = 31536000; // Replace this with your desired time to live value in seconds
@@ -122,14 +125,11 @@ const UserDetails = () => {
 
   const handleFileUpload = async () => {
     setUploading(true);
-
+    console.log("uploading");
     try {
       for (const file of selectedFiles) {
-        const todo = {
-          id: Date.now(),
-        };
-
-        const updatedTodos = await addTodo(todo, todos, userName, file);
+        console.log(file, todos);
+        const updatedTodos = await addTodo(todos, userName, file);
         setTodos(updatedTodos);
         // Save updated todos to local storage
         localStorage.setItem(
@@ -146,10 +146,13 @@ const UserDetails = () => {
       console.error("Error uploading files:", error);
     } finally {
       setUploading(false);
+      setIsFile(false);
       setSelectedFiles([]);
       setIsFilesSelected(false); // Reset isFilesSelected to false after upload
       setSelectedFileName(""); // Reset selected file name after upload
       setFileInfo({}); // Clear the file information after upload
+      setGetInfo(true);
+      setUrl("");
     }
   };
 
@@ -195,6 +198,37 @@ const UserDetails = () => {
 
   const copyMnemonic = () => {
     navigator.clipboard.writeText(memonic);
+  };
+
+  const isValidURL = (url) => {
+    // Regular expression to match a URL
+    var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+    return urlRegex.test(url);
+  };
+  const getDetails = async () => {
+    if (!isValidURL(url)) {
+      alert("invalid url");
+      return;
+    }
+    const response = await fetch(url);
+    const type = response.headers.get("content-type");
+    const blob = await response.blob();
+    console.log();
+    // Create a File object from the blob
+    var name = url.split("/");
+    const file = new File([blob], name[name.length - 1], { type });
+    setSelectedFiles([file]);
+    const ttl = 31536000; // Replace this with your desired time to live value in seconds
+    calculateFileInfo(file, ttl)
+      .then((info) => {
+        console.log(info, "bruh this is the info");
+        // You can access the calculated file information here.
+        setFileInfo(info);
+      })
+      .catch((error) => {
+        console.error("Error calculating file info:", error);
+      });
+    setGetInfo(false);
   };
 
   return (
@@ -248,13 +282,35 @@ const UserDetails = () => {
                 onChange={handleFileSelection}
               />
             </label>
-            {selectedFiles.length ? (
+            {isFile ? (
               <button onClick={handleFileUpload} className="upload-button">
                 <img src={swarm} alt="logo" />
                 <text>Upload to Swarm</text>
               </button>
             ) : null}
-            {uploading && <p>Uploading...</p>}
+            {uploading && isFile && <p>Uploading...</p>}
+          </div>
+          <div style={{ display: "flex" }}>
+            <input
+              value={url}
+              placeholder="File URL"
+              onChange={(e) => {
+                setGetInfo(true);
+                setUrl(e.target.value);
+              }}
+              className="url"
+            />
+            {getInfo ? (
+              <button onClick={getDetails} className="upload-button">
+                Get Info
+              </button>
+            ) : (
+              <button onClick={handleFileUpload} className="upload-button">
+                <img src={swarm} alt="logo" />
+                <text>Upload to Swarm</text>
+              </button>
+            )}
+            {uploading && !getInfo && <p>Uploading...</p>}
           </div>
           {Object.keys(fileInfo).length > 0 && (
             <div className="file-info">

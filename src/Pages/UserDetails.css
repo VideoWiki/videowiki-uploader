@@ -171,6 +171,7 @@
   display: flex;
   filter: brightness(1.1);
   transition: filter 0.3s ease;
+  margin: 0 5px;
 }
 
 .upload-button:hover::before {
@@ -294,4 +295,8 @@
 
 .cursor {
   cursor: pointer;
+}
+
+.url {
+  width: 50%;
 }

@@ -8,14 +8,15 @@ const Navbar = () => {
     localStorage.removeItem("accessToken");
     navigate("/");
   };
+  const redirect = () => {
+    if (localStorage["user"] && localStorage["accessToken"]) {
+      return;
+    }
+    navigate("/");
+  };
   return (
     <nav>
-      <div
-        className="logo"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
+      <div className="logo" onClick={redirect}>
         <img src="vw-new-logo.svg" alt="VideoWiki logo" />
         <span>VideoWiki</span>
       </div>
