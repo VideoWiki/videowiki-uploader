@@ -1,14 +1,14 @@
 /* UserDetails.css */
 
-*{
-  font-family: Popins,sans-serif;
+* {
+  font-family: Popins, sans-serif;
 }
 
 .userDetails {
   width: 90%;
   margin: auto;
   margin-bottom: 2rem;
-  min-height:500px;
+  min-height: 500px;
   max-height: fit-content;
   /* border: 1px solid red; */
 }
@@ -46,7 +46,8 @@
 }
 
 .user-todos-container::-webkit-scrollbar {
-  width: 8px; /* Width of the vertical scrollbar */
+  width: 8px;
+  /* Width of the vertical scrollbar */
 }
 
 .user-todos-container::-webkit-scrollbar-thumb {
@@ -64,7 +65,7 @@
 
 .user-todos-container::-webkit-scrollbar-track {
   background-color: #f1f1f1;
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 
 .user-info h2 {
@@ -169,15 +170,15 @@
   font-size: 16px;
   display: flex;
   filter: brightness(1.1);
-  transition: filter 0.3s ease; 
+  transition: filter 0.3s ease;
 }
 
 .upload-button:hover::before {
   opacity: 1;
 }
 
-.upload-button:hover{
-  filter:contrast(1.1);
+.upload-button:hover {
+  filter: contrast(1.1);
   transition: all 0.3s ease;
   transform: translateY(-5%);
   font-weight: 500;
@@ -185,13 +186,13 @@
 }
 
 
-.upload-button>img{
+.upload-button>img {
   width: 30px;
   height: 30px;
   margin: auto;
 }
 
-.upload-button>text{
+.upload-button>text {
   margin: auto;
   margin-left: 5px;
   align-self: center;
@@ -281,7 +282,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 80vh;
   flex-direction: column;
 }
 

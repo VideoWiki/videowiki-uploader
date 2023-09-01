@@ -40,13 +40,13 @@ const UserDetails = () => {
   const [selectedFileName, setSelectedFileName] = useState("");
   const [fileInfo, setFileInfo] = useState({});
   const navigate = useNavigate();
+  const storedUser = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     // Load user data from local storage
     if (!localStorage.getItem("accessToken")) {
       navigate("/login");
       return;
     }
-    const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       // Set the user data from local storage if available
       setUserName(storedUser.userName);
@@ -78,7 +78,7 @@ const UserDetails = () => {
       setTodos(dataUrls);
       localStorage.setItem(
         "user",
-        JSON.stringify({ userName, walletAddress, memonic, todos: dataUrls })
+        JSON.stringify({ ...storedUser, todos: dataUrls })
       );
       console.log(`TODOS`, todos);
     } catch (e) {
@@ -203,8 +203,8 @@ const UserDetails = () => {
         <div className="center">
           <ClipLoader
             loading={loading}
-            cssOverride={override}
             size={150}
+            color="#7247C4"
             aria-label="Loading Spinner"
             data-testid="loader"
           />
