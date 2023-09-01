@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { listTodos, loginAccount } from "../utils";
+import { initTodos, listTodos, loginAccount } from "../utils";
 import { UserContext, StepContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom"; // Import useHistory hook
 import "../Popup.css"; // Import the CSS file here
@@ -39,7 +39,7 @@ const LoginForm = () => {
       const res = await loginAccount(email, password);
       console.log("hello world", res);
       setStep(2);
-      const list = await listTodos(email);
+      const list = await initTodos(email);
       const dataUrls = list.map((todo) => {
         return {
           name: todo.name,
@@ -60,7 +60,7 @@ const LoginForm = () => {
       setEmail("");
       setPassword("");
     } catch (error) {
-      // setLoad(false);
+      setLoad(false);
       console.log("Error", error);
       setText(error.message);
     }

@@ -16,7 +16,7 @@ const Navbar = () => {
           navigate("/");
         }}
       >
-        <img src="logo.svg" alt="VideoWiki logo" />
+        <img src="vw-new-logo.svg" alt="VideoWiki logo" />
         <span>VideoWiki</span>
       </div>
       {localStorage.getItem("accessToken") ? (

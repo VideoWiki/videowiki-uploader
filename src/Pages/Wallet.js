@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { getUsername } from "../utils";
+import { getUsername, initTodos } from "../utils";
 import { Web3 } from "web3";
 import { StepContext, UserContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +52,7 @@ const Wallet = () => {
       console.log("dsa", res);
       setLoad("Login");
       setStep(2);
-      const list = await listTodos(username);
+      const list = await initTodos(username);
       const dataUrls = list.map((todo) => {
         return {
           name: todo.name,
