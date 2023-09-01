@@ -11,14 +11,14 @@ const Loader = (props) => {
       <div id="steps">
         <Steps steps={props.steps} />
       </div>
-      <button
+      {/* <button
         onClick={() => {
           setLoad(false);
         }}
         s
       >
         go Login
-      </button>
+      </button> */}
     </div>
   );
 };

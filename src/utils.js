@@ -411,3 +411,49 @@ export const getUsername = async (str) => {
     console.log(e);
   }
 };
+
+// uploadToCloud({ commit }, { file, connectSTr, container }) {
+//   const data = new FormData();
+//   data.append('file', file);
+//   data.append('azure_container', container);
+//   data.append('azure_connect_str', connectSTr);
+
+//   const config = {
+//     method: 'post',
+//     maxBodyLength: Infinity,
+//     url: 'https://api.storage.video.wiki/api/upload/',
+//     headers: {
+//       Authorization: constants.StorageKey,
+//     },
+//     data: data,
+//   };
+//   return new Promise((resolve, reject) => {
+//     axios(config)
+//       .then((response) => {
+//         resolve(response.data);
+//       })
+//       .catch((e) => {
+//         reject(e);
+//       });
+//   });
+// },
+// checkStatus({ commit }, payload) {
+//   const config = {
+//     method: 'get',
+//     url:
+//       'https://api.storage.video.wiki/api/upload/status/?task_id=' + payload,
+//     headers: {
+//       Authorization: constants.StorageKey,
+//     },
+//   };
+//   return new Promise((resolve, reject) => {
+//     axios(config)
+//       .then(({ data }) => {
+//         resolve(data);
+//       })
+//       .catch((e) => {
+//         console.log(e, 'dsd');
+//         reject(e);
+//       });
+//   });
+// },
