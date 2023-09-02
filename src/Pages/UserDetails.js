@@ -301,7 +301,7 @@ const UserDetails = () => {
         setSelectedFiles([]);
         setIsFilesSelected(false); // Reset isFilesSelected to false after upload
         setSelectedFileName(""); // Reset selected file name after upload
-        setFileInfo({}); // Clear the file information after upload
+        setTimeout(() => setFileInfo({}), 1000); // Clear the file information after upload
         setUrl("");
       } else {
         setTimeout(() => checkStatus(taskId), 2000);
