@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import { StepContext } from "../Context/contexts";
+import React from "react";
+// import { StepContext } from "../Context/contexts";
 import Steps from "./Steps";
 import "./Loader.css";
 
 const Loader = (props) => {
-  const { setLoad } = useContext(StepContext);
+  // const { setLoad } = useContext(StepContext);
   return (
     <div id="loader">
       <h1 className="text-center">{props.heading}</h1>

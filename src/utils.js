@@ -21,14 +21,21 @@ const alchemy = new Alchemy(settings);
 let fundWallet = new Wallet(PRIVATE_KEY);
 
 export const apiHost = () => {
-  // let url = window.location.href.replace(/^https:\/\/fairos\.video\.wiki\/.*$/, "http://localhost:3000/api");
-  let url = "https://dev.cast.video.wiki";
+  let url = process.env.REACT_APP_API_URL;
   return url;
 };
 
+const editorUrl = process.env.REACT_APP_API_EDITOR;
+const staorageUrl = process.env.REACT_APP_API_STORAGE;
+const apiKey = process.env.REACT_APP_API_KEY;
+console.log(`API url: ${apiHost()}`);
+console.log(`API Editor: ${editorUrl}`);
+console.log(`API storage: ${staorageUrl}`);
+console.log(`API Key: ${apiKey}`);
+
 export const registerAccount = async (username, password, mnemonic) => {
   const ENDPOINT = "/v2/user/signup";
-  const FAIROS_HOST = "https://dev.cast.video.wiki";
+  const FAIROS_HOST = apiHost();
   console.log(FAIROS_HOST, "kkkk");
   let url = `${FAIROS_HOST}${ENDPOINT}`;
   console.log(url, "urlssss");
@@ -238,7 +245,7 @@ export async function topUpAddress(address) {
 
 export const loginAccount = async (userName, password) => {
   const ENDPOINT = "/v2/user/login";
-  const FAIROS_HOST = "https://dev.cast.video.wiki";
+  const FAIROS_HOST = apiHost();
   let data = {
     userName,
     password,
@@ -387,7 +394,7 @@ export const getUsername = async (str) => {
   };
   try {
     var username = await fetch(
-      "https://api.video.wiki/api/swarm/generate/username/",
+      editorUrl + "/api/swarm/generate/username/",
       options
     );
     let json = await username.json();
@@ -396,7 +403,7 @@ export const getUsername = async (str) => {
     } else {
       if (json.error === "Username already exists.") {
         username = await fetch(
-          "https://api.video.wiki/api/swarm/get/username/?username=" + str
+          editorUrl + "/api/swarm/get/username/?username=" + str
         );
         json = await username.json();
         if (username.ok) {
@@ -418,7 +425,7 @@ export const getUsername = async (str) => {
 //   const config = {
 //     method: 'post',
 //     maxBodyLength: Infinity,
-//     url: 'https://api.storage.video.wiki/api/upload/',
+//     url: staorageUrl+'/api/upload/',
 //     headers: {
 //       Authorization: constants.StorageKey,
 //     },
@@ -438,7 +445,7 @@ export const getUsername = async (str) => {
 //   const config = {
 //     method: 'get',
 //     url:
-//       'https://api.storage.video.wiki/api/upload/status/?task_id=' + payload,
+//       staorageUrl+'/api/upload/status/?task_id=' + payload,
 //     headers: {
 //       Authorization: constants.StorageKey,
 //     },
@@ -454,3 +461,66 @@ export const getUsername = async (str) => {
 //       });
 //   });
 // },
+
+export const getCookie = async (username, password) => {
+  const body = {
+    username: username,
+    password: password,
+  };
+  const options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const response = await fetch(
+      editorUrl + "/api/swarm/login?" + new URLSearchParams(body),
+      options
+    );
+    const json = await response.json();
+    if (response.ok) {
+      if (json.result.slice(0, 7) === " fairOS") {
+        localStorage.setItem("fairOs", json.result.trim());
+      } else {
+        setTimeout(() => getCookie(username, password), 2000);
+      }
+    } else {
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+export const urlUpload = async (username, file) => {
+  var formData = new FormData();
+  formData.append("username", username);
+  formData.append("cookie", localStorage.getItem("fairOs").trim());
+  formData.append("video_url", file);
+
+  var requestOptions = {
+    method: "POST",
+    body: formData,
+    redirect: "follow",
+  };
+
+  const upload = await fetch(
+    staorageUrl + "/api/swarm/upload/",
+    requestOptions
+  );
+
+  const json = await upload.json();
+  console.log(json, "upload");
+  return json;
+};
+
+export const uploadStatus = async (taskId) => {
+  try {
+    const status = await fetch(
+      staorageUrl + "/api/swarm/upload/status/" + taskId
+    );
+    const json = await status.json();
+    return json;
+  } catch (e) {
+    throw e;
+  }
+};

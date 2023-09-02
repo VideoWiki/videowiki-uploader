@@ -9,6 +9,8 @@ import {
   downloadTodo,
   initTodos,
   listTodos,
+  uploadStatus,
+  urlUpload,
 } from "../utils";
 import { calculateFileInfo } from "../PriceCalculator/calculateFileInfo";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -40,7 +42,7 @@ const UserDetails = () => {
   const [selectedFileName, setSelectedFileName] = useState("");
   const [fileInfo, setFileInfo] = useState({});
   const [url, setUrl] = useState("");
-  const [getInfo, setGetInfo] = useState(true);
+  const [getInfo, setGetInfo] = useState(false);
   const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -234,6 +236,87 @@ const UserDetails = () => {
       });
     setGetInfo(false);
   };
+  const upload = async () => {
+    try {
+      setUploading(true);
+      const resp = await urlUpload(userName, url);
+      console.log("resp", resp);
+      checkStatus(resp.task_id);
+    } catch (e) {
+      console.log("err", e);
+    }
+  };
+
+  const checkStatus = async (taskId) => {
+    try {
+      const res = await uploadStatus(taskId);
+      console.log(res, "reso");
+      if (res.status === "SUCCESS") {
+        console.log("res");
+        const result = JSON.parse(res.result);
+        console.log(result);
+        if (result.Responses[0].message === "uploaded successfully") {
+          var newTodos = todos;
+          const name = url.split("/");
+          var type = url.split("/");
+          switch (type[type.length - 1]) {
+            default:
+              type = "file";
+              break;
+            case "pdf":
+              type = "file";
+              break;
+            case "webm":
+              type = "video/webm";
+              break;
+            case "mp4":
+              type = "video/mp4";
+              break;
+            case "png":
+              type = "image/png";
+              break;
+            case "jpg":
+              type = "image/jpg";
+              break;
+            case "jpeg":
+              type = "image/jpeg";
+              break;
+            case "svg":
+              type = "image/svg";
+              break;
+          }
+          var newTodo = {
+            name: name[name.length - 1],
+            dataURL: url,
+            type: type, // Add the 'type' of the todo blob here
+          };
+          newTodos.push({ ...newTodo });
+          setTodos(newTodos);
+        } else {
+          alert("error occur try again");
+        }
+        setUploading(false);
+        setIsFile(false);
+        setSelectedFiles([]);
+        setIsFilesSelected(false); // Reset isFilesSelected to false after upload
+        setSelectedFileName(""); // Reset selected file name after upload
+        setFileInfo({}); // Clear the file information after upload
+        setUrl("");
+      } else {
+        setTimeout(() => checkStatus(taskId), 2000);
+      }
+    } catch (e) {
+      setUploading(false);
+      setIsFile(false);
+      setSelectedFiles([]);
+      setIsFilesSelected(false); // Reset isFilesSelected to false after upload
+      setSelectedFileName(""); // Reset selected file name after upload
+      setFileInfo({}); // Clear the file information after upload
+      setUrl("");
+      console.log(e);
+      alert("error occurred");
+    }
+  };
 
   return (
     <div className="userDetails">
@@ -294,12 +377,12 @@ const UserDetails = () => {
             ) : null}
             {uploading && isFile && <p>Uploading...</p>}
           </div>
-          {/* <div style={{ display: "flex" }}>
+          <div style={{ display: "flex" }}>
             <input
               value={url}
               placeholder="File URL"
               onChange={(e) => {
-                setGetInfo(true);
+                setGetInfo(false);
                 setUrl(e.target.value);
               }}
               className="url"
@@ -309,13 +392,13 @@ const UserDetails = () => {
                 Get Info
               </button>
             ) : (
-              <button onClick={handleFileUpload} className="upload-button">
+              <button onClick={upload} className="upload-button">
                 <img src={swarm} alt="logo" />
                 <text>Upload to Swarm</text>
               </button>
             )}
             {uploading && !getInfo && <p>Uploading...</p>}
-          </div> */}
+          </div>
           {Object.keys(fileInfo).length > 0 && (
             <div className="file-info">
               <h3>File Information:</h3>

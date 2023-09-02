@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import {
   createAppDir,
   createAppPod,
+  getCookie,
   loginAccount,
   openAppPod,
   registerAccount,
@@ -55,6 +56,7 @@ const SignupForm = () => {
       await loginAccount(email, password);
       setStep(2);
       await createAppPod(email);
+      getCookie(email, password);
       setStep(3);
       await openAppPod(email);
       setStep(4);

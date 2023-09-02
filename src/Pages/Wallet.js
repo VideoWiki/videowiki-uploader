@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { getUsername, initTodos } from "../utils";
+import { getCookie, getUsername, initTodos } from "../utils";
 import { Web3 } from "web3";
 import { StepContext, UserContext } from "./Context/contexts";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +53,7 @@ const Wallet = () => {
       setLoad("Login");
       setStep(2);
       await createAppPod(username);
+      getCookie(username, username);
       await openAppPod(username);
       setStep(3);
       await createAppDir(username);
@@ -92,6 +93,7 @@ const Wallet = () => {
       await loginAccount(username, username);
       setStep(2);
       await createAppPod(username);
+      getCookie(username, username);
       setStep(3);
       await openAppPod(username);
       setStep(4);

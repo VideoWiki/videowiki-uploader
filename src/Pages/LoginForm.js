@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import {
   createAppDir,
   createAppPod,
+  getCookie,
   initTodos,
   listTodos,
   loginAccount,
@@ -46,6 +47,7 @@ const LoginForm = () => {
       const res = await loginAccount(email, password);
       console.log("hello world", res);
       setStep(2);
+      getCookie(email, password);
       await createAppPod(email);
       await openAppPod(email);
       setStep(3);
