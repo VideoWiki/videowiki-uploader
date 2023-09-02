@@ -378,7 +378,7 @@ const UserDetails = () => {
             ) : null}
             {uploading && isFile && <p>Uploading...</p>}
           </div>
-          <div style={{ display: "flex" }}>
+          {/* <div style={{ display: "flex" }}>
             <input
               value={url}
               placeholder="File URL"
@@ -399,7 +399,7 @@ const UserDetails = () => {
               </button>
             )}
             {uploading && !getInfo && <p>Uploading...</p>}
-          </div>
+          </div> */}
           {Object.keys(fileInfo).length > 0 && (
             <div className="file-info">
               <h3>File Information:</h3>
