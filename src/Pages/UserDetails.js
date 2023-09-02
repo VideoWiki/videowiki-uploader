@@ -241,6 +241,7 @@ const UserDetails = () => {
       setUploading(true);
       const resp = await urlUpload(userName, url);
       console.log("resp", resp);
+      setFileInfo(JSON.parse(resp.filedata));
       checkStatus(resp.task_id);
     } catch (e) {
       console.log("err", e);
