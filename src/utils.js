@@ -21,7 +21,8 @@ const alchemy = new Alchemy(settings);
 let fundWallet = new Wallet(PRIVATE_KEY);
 
 export const apiHost = () => {
-  let url = process.env.REACT_APP_API_URL;
+  // let url = process.env.REACT_APP_API_URL;
+  let url = "https://dev.cast.video.wiki";
   return url;
 };
 
@@ -394,7 +395,7 @@ export const getUsername = async (str) => {
   };
   try {
     var username = await fetch(
-      editorUrl + "/api/swarm/generate/username/",
+      "https://api.video.wiki/api/swarm/generate/username/",
       options
     );
     let json = await username.json();
@@ -403,7 +404,7 @@ export const getUsername = async (str) => {
     } else {
       if (json.error === "Username already exists.") {
         username = await fetch(
-          editorUrl + "/api/swarm/get/username/?username=" + str
+          "https://api.video.wiki/api/swarm/get/username/?username=" + str
         );
         json = await username.json();
         if (username.ok) {
@@ -475,7 +476,7 @@ export const getCookie = async (username, password) => {
   };
   try {
     const response = await fetch(
-      editorUrl + "/api/swarm/login?" + new URLSearchParams(body),
+      "https://api.video.wiki/api/swarm/login?" + new URLSearchParams(body),
       options
     );
     const json = await response.json();
@@ -504,7 +505,7 @@ export const urlUpload = async (username, file) => {
   };
 
   const upload = await fetch(
-    staorageUrl + "/api/swarm/upload/",
+    "https://api.storage.video.wiki/api/swarm/upload/",
     requestOptions
   );
 
@@ -516,7 +517,7 @@ export const urlUpload = async (username, file) => {
 export const uploadStatus = async (taskId) => {
   try {
     const status = await fetch(
-      staorageUrl + "/api/swarm/upload/status/" + taskId
+      "https://api.storage.video.wiki/api/swarm/upload/status/" + taskId
     );
     const json = await status.json();
     return json;
