@@ -199,6 +199,7 @@
   align-self: center;
 }
 
+
 /* .upload-button:hover {
   background-color: #0056b3;
 }
@@ -231,8 +232,21 @@
 
 /* Additional styling to center the "Select Files" button */
 .file-label {
-  display: flex;
-  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;  border: none;
+  padding: 5px;
+  border: 1px solid #c4c2c2;
+  border-radius: 5px;
+  background-color: #fff;
+  margin-bottom: 10px;
+  background-color: none;
+}
+
+.file-label:hover {
+  filter: contrast(1.1);
+  transition: all 0.3s ease;
+  transform: translateY(-5%);
+  font-weight: 500;
+  overflow: hidden;
 }
 
 .todo-actions {

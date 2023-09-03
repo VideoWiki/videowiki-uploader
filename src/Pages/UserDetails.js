@@ -38,6 +38,7 @@ const UserDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isFilesSelected, setIsFilesSelected] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [fileInfo, setFileInfo] = useState({});
   const [url, setUrl] = useState("");
   const [getInfo, setGetInfo] = useState(true);
@@ -108,10 +109,23 @@ const UserDetails = () => {
   const handleFileSelection = (event) => {
     if (!event.target.files.length) return;
     const files = Array.from(event.target.files);
+
+    const duplicateFile = files.find((file) =>
+      uploadedFileNames.includes(file.name)
+    );
+
+    if (duplicateFile) {
+      alert(`File ${duplicateFile.name} is already uploaded.`);
+      console.log('dup');
+      event.target.value = ""; 
+      return;
+    }
+
     setSelectedFiles(files);
     setIsFilesSelected(true);
     setSelectedFileName(files[0].name);
     setIsFile(true);
+
     if (files.length > 0) {
       const file = files[0];
       const ttl = 31536000; // Replace this with your desired time to live value in seconds
@@ -145,6 +159,12 @@ const UserDetails = () => {
             todos: updatedTodos,
           })
         );
+
+        // Add the uploaded file names to the list
+        setUploadedFileNames((prevUploadedFileNames) => [
+          ...prevUploadedFileNames,
+          file.name,
+        ]);
       }
     } catch (error) {
       console.error("Error uploading files:", error);
