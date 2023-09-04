@@ -58,7 +58,7 @@ const UserDetails = () => {
       setWalletAddress(storedUser.walletAddress);
       setMemonic(storedUser.memonic);
       setTodos(storedUser.todos);
-      getTodos(storedUser.userName);
+      // getTodos(storedUser.userName);
     } else {
       localStorage.setItem(
         "user",
@@ -76,7 +76,7 @@ const UserDetails = () => {
       }
       setLoading(false);
       console.log("todo", todos);
-      const dataUrls = todos.map((todo) => {
+      const dataUrls = todos?.map((todo) => {
         return {
           name: todo.name,
           dataURL: URL.createObjectURL(todo.blob),
@@ -104,7 +104,7 @@ const UserDetails = () => {
   };
 
   const uniqueTodoTypes = [
-    ...new Set(todos.map((todo) => getFileExtension(todo.name))),
+    ...new Set(todos?.map((todo) => getFileExtension(todo.name))),
   ];
 
   const handleFileSelection = (event) => {
@@ -241,7 +241,12 @@ const UserDetails = () => {
       setUploading(true);
       const resp = await urlUpload(userName, url);
       console.log("resp", resp);
-      setFileInfo(JSON.parse(resp.filedata));
+      var info = resp.filedata;
+      info = info.replace("{", "");
+      info = info.replace("}", "");
+      info = info.replace("'", "");
+      console.log("info", info, "this is the info");
+      setFileInfo(info);
       checkStatus(resp.task_id);
     } catch (e) {
       console.log("err", e);
@@ -259,7 +264,8 @@ const UserDetails = () => {
         if (result.Responses[0].message === "uploaded successfully") {
           var newTodos = todos;
           const name = url.split("/");
-          var type = url.split("/");
+          var type = url.split(".");
+          console.log("type", type);
           switch (type[type.length - 1]) {
             default:
               type = "file";
@@ -378,7 +384,7 @@ const UserDetails = () => {
             ) : null}
             {uploading && isFile && <p>Uploading...</p>}
           </div>
-          {/* <div style={{ display: "flex" }}>
+          <div style={{ display: "flex" }}>
             <input
               value={url}
               placeholder="File URL"
@@ -399,28 +405,33 @@ const UserDetails = () => {
               </button>
             )}
             {uploading && !getInfo && <p>Uploading...</p>}
-          </div> */}
-          {Object.keys(fileInfo).length > 0 && (
-            <div className="file-info">
-              <h3>File Information:</h3>
-              <p>Name: {fileInfo.name}</p>
-              <p>ttl: {fileInfo.ttl} bytes</p>
-              <p>Size in KB: {fileInfo.sizeKB} KB</p>
-              <p>Size in MB: {fileInfo.sizeMB} MB</p>
-              <p>Type: {fileInfo.type}</p>
-              <p>chunks: {fileInfo.chunks}</p>
-              <p>depth: {fileInfo.depth}</p>
-              <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
-              <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p>
-              {/* Display other calculated properties as needed */}
-            </div>
-          )}
+          </div>
+          <div className="file-info">
+            <h3>File Information:</h3>
+            {typeof fileInfo === "string" ? (
+              <pre>{fileInfo}</pre>
+            ) : (
+              Object.keys(fileInfo).length > 0 && (
+                <>
+                  <p>Name: {fileInfo.name}</p>
+                  <p>ttl: {fileInfo.ttl} bytes</p>
+                  <p>Size in KB: {fileInfo.sizeKB} KB</p>
+                  <p>Size in MB: {fileInfo.sizeMB} MB</p>
+                  <p>Type: {fileInfo.type}</p>
+                  <p>chunks: {fileInfo.chunks}</p>
+                  <p>depth: {fileInfo.depth}</p>
+                  <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
+                  <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p>
+                </>
+              )
+            )}
+          </div>
           <div className="user-todos-container">
-            {uniqueTodoTypes.map((type, typeIndex) => (
+            {uniqueTodoTypes?.map((type, typeIndex) => (
               <div key={typeIndex}>
                 <h4>{type} Files:</h4>
                 <div className="todos-container">
-                  {todos.map((todo, todoIndex) => {
+                  {todos?.map((todo, todoIndex) => {
                     if (getFileExtension(todo.name) === type) {
                       return (
                         <div key={todoIndex} className="todo-item">
