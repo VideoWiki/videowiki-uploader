@@ -404,7 +404,7 @@ const UserDetails = () => {
                 <text>Upload to Swarm</text>
               </button>
             )}
-            {uploading && !getInfo && <p>Uploading...</p>}
+            {uploading && url.length !== 0 && !getInfo && <p>Uploading...</p>}
           </div>
           <div className="file-info">
             <h3>File Information:</h3>
