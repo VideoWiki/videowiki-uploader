@@ -18,6 +18,7 @@ import Navbar from "./Pages/Navbar";
 import Wallet from "./Pages/Wallet";
 import { StepContext } from "./Pages/Context/contexts";
 import Loader from "./Pages/Loader/Loader";
+import VideoWikiUpload from "./Pages/VideoWikiUpload";
 
 function Home() {
   const { load } = useContext(StepContext);
@@ -90,6 +91,7 @@ function Popup() {
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
               <Route path="/userdetails" element={<UserDetails />} />
+              <Route path="/upload/:url" element={<VideoWikiUpload />} />
               {/* <Route path="/metamask" element={<Metamask />} /> */}
             </Routes>
           </div>

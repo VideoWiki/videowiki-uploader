@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <nav>
       <div className="logo" onClick={redirect}>
-        <img src="vw-new-logo.svg" alt="VideoWiki logo" />
+        <img src="/vw-new-logo.svg" alt="VideoWiki logo" />
         <span>VideoWiki</span>
       </div>
       {localStorage.getItem("accessToken") ? (

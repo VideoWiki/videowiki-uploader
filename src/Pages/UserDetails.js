@@ -15,7 +15,7 @@ import {
 import { calculateFileInfo } from "../PriceCalculator/calculateFileInfo";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-import { BiCopy } from "react-icons/bi";
+import { BiCloudUpload, BiCopy } from "react-icons/bi";
 
 const override = {
   display: "block",
@@ -35,6 +35,7 @@ const UserDetails = () => {
     setTodos,
   } = useContext(UserContext);
   const fileInputRef = useRef(null);
+  const box = useRef(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -43,6 +44,7 @@ const UserDetails = () => {
   const [fileInfo, setFileInfo] = useState({});
   const [url, setUrl] = useState("");
   const [getInfo, setGetInfo] = useState(false);
+  const [error, setError] = useState("");
   const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -58,7 +60,7 @@ const UserDetails = () => {
       setWalletAddress(storedUser.walletAddress);
       setMemonic(storedUser.memonic);
       setTodos(storedUser.todos);
-      getTodos(storedUser.userName);
+      // getTodos(storedUser.userName);
     } else {
       localStorage.setItem(
         "user",
@@ -114,6 +116,10 @@ const UserDetails = () => {
     setIsFilesSelected(true);
     setSelectedFileName(files[0].name);
     setIsFile(true);
+    box.current.style.background = `url(${URL.createObjectURL(
+      event.target.files[0]
+    )})`;
+
     if (files.length > 0) {
       const file = files[0];
       const ttl = 31536000; // Replace this with your desired time to live value in seconds
@@ -324,6 +330,38 @@ const UserDetails = () => {
       alert("error occurred");
     }
   };
+  const handleUpload = () => {
+    setError("");
+    if (url.length > 0) {
+      console.log(1);
+      upload();
+    } else if (selectedFiles.length > 0) {
+      console.log(2);
+      handleFileUpload();
+    } else {
+      console.log(3);
+      setError("Select a file first");
+    }
+  };
+  const clickInput = () => {
+    console.log(fileInputRef.current);
+    fileInputRef.current.click();
+  };
+
+  if (uploading) {
+    return (
+      <div className="center">
+        <ClipLoader
+          loading={uploading}
+          size={150}
+          color="#7247C4"
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+        <h2 className="text-center">Uploading Files</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="userDetails">
@@ -358,32 +396,35 @@ const UserDetails = () => {
               </p>
             )}
           </div>
-          <div className="file-upload">
-            {isFilesSelected && (
-              <div className="selected-file-info">
-                <h3>Selected File:</h3>
-              </div>
+          <div className="file-info">
+            {typeof fileInfo === "string" ? (
+              <pre>{fileInfo}</pre>
+            ) : (
+              Object.keys(fileInfo).length > 0 && (
+                <>
+                  <p>Name: {fileInfo.name}</p>
+                  <p>Size in MB: {fileInfo.sizeMB} MB</p>
+                  <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
+                  {/* <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p> */}
+                </>
+              )
             )}
-
-            <label htmlFor="todo" className="file-label">
-              {isFilesSelected ? selectedFileName : "Select Files"}
-              <input
-                type="file"
-                id="todo"
-                ref={fileInputRef}
-                multiple
-                accept="image/*, video/*"
-                onChange={handleFileSelection}
-              />
-            </label>
-            {isFile ? (
-              <button onClick={handleFileUpload} className="upload-button">
-                <img src={swarm} alt="logo" />
-                <text>Upload to Swarm</text>
-              </button>
-            ) : null}
-            {uploading && isFile && <p>Uploading...</p>}
           </div>
+          <div className="file-upload">
+            <div className="file-select-box" ref={box} onClick={clickInput}>
+              <BiCloudUpload size={40} />
+              <h3>Click to select file</h3>
+            </div>
+            <input
+              type="file"
+              id="todo"
+              ref={fileInputRef}
+              multiple
+              accept="image/*, video/*"
+              onChange={handleFileSelection}
+            />
+          </div>
+          <p class="hr-lines">or</p>
           <div style={{ display: "flex" }}>
             <input
               value={url}
@@ -394,38 +435,13 @@ const UserDetails = () => {
               }}
               className="url"
             />
-            {getInfo ? (
-              <button onClick={getDetails} className="upload-button">
-                Get Info
-              </button>
-            ) : (
-              <button onClick={upload} className="upload-button">
-                <img src={swarm} alt="logo" />
-                <text>Upload to Swarm</text>
-              </button>
-            )}
-            {uploading && url.length !== 0 && !getInfo && <p>Uploading...</p>}
           </div>
-          <div className="file-info">
-            <h3>File Information:</h3>
-            {typeof fileInfo === "string" ? (
-              <pre>{fileInfo}</pre>
-            ) : (
-              Object.keys(fileInfo).length > 0 && (
-                <>
-                  <p>Name: {fileInfo.name}</p>
-                  <p>ttl: {fileInfo.ttl} bytes</p>
-                  <p>Size in KB: {fileInfo.sizeKB} KB</p>
-                  <p>Size in MB: {fileInfo.sizeMB} MB</p>
-                  <p>Type: {fileInfo.type}</p>
-                  <p>chunks: {fileInfo.chunks}</p>
-                  <p>depth: {fileInfo.depth}</p>
-                  <p>totalAmountBZZ: {fileInfo.totalAmount}</p>
-                  <p>totalAmountPLUR: {fileInfo.totalAmountPLUR}</p>
-                </>
-              )
-            )}
-          </div>
+          <p className="error">{error}</p>
+          <button onClick={handleUpload} className="upload-button">
+            <img src={swarm} alt="logo" />
+            <text>Upload to Swarm</text>
+          </button>
+
           <div className="user-todos-container">
             {uniqueTodoTypes?.map((type, typeIndex) => (
               <div key={typeIndex}>
@@ -458,18 +474,18 @@ const UserDetails = () => {
                             </p>
                             <div className="todo-actions">
                               {/* Delete button */}
-                              <button
-                                className="delete-button"
-                                onClick={() => handleDeleteTodo(todo.name)}
-                              >
-                                Delete
-                              </button>
                               {/* Download button */}
                               <button
                                 className="download-button"
                                 onClick={() => handleDownloadTodo(todo.name)}
                               >
                                 Download
+                              </button>
+                              <button
+                                className="delete-button"
+                                onClick={() => handleDeleteTodo(todo.name)}
+                              >
+                                Delete
                               </button>
                             </div>
                           </div>
