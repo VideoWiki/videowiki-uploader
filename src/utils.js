@@ -29,7 +29,8 @@ export const apiHost = () => {
 const editorUrl = process.env.REACT_APP_API_EDITOR;
 const staorageUrl = process.env.REACT_APP_API_STORAGE;
 const apiKey = process.env.REACT_APP_API_KEY;
-console.log(`API url: ${apiHost()}`);
+const apiUrl = process.env.REACT_APP_API_URL;
+console.log(`API url: ${apiUrl}`);
 console.log(`API Editor: ${editorUrl}`);
 console.log(`API storage: ${staorageUrl}`);
 console.log(`API Key: ${apiKey}`);
@@ -395,7 +396,7 @@ export const getUsername = async (str) => {
   };
   try {
     var username = await fetch(
-      "https://api.video.wiki/api/swarm/generate/username/",
+      editorUrl + "/api/swarm/generate/username/",
       options
     );
     let json = await username.json();
@@ -404,7 +405,7 @@ export const getUsername = async (str) => {
     } else {
       if (json.error === "Username already exists.") {
         username = await fetch(
-          "https://api.video.wiki/api/swarm/get/username/?username=" + str
+          editorUrl + "/api/swarm/get/username/?username=" + str
         );
         json = await username.json();
         if (username.ok) {
@@ -476,7 +477,7 @@ export const getCookie = async (username, password) => {
   };
   try {
     const response = await fetch(
-      "https://api.video.wiki/api/swarm/login?" + new URLSearchParams(body),
+      editorUrl + "/api/swarm/login?" + new URLSearchParams(body),
       options
     );
     const json = await response.json();
@@ -524,4 +525,14 @@ export const uploadStatus = async (taskId) => {
   } catch (e) {
     throw e;
   }
+};
+
+export const checkLogin = async () => {
+  const options = {
+    method: "GET",
+    headers,
+  };
+  const res = await fetch("https://dev.cast.video.wiki/v1/pod/ls", options);
+  console.log(res.status);
+  return res.status === 200;
 };
