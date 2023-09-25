@@ -114,6 +114,9 @@ const AutoLogin = () => {
   const isLogin = async () => {
     const isLoggedIn = await checkLogin();
     if (isLoggedIn) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      //   alert(user.userName);
+      setUserName(user.userName);
       navigate(`/upload/${url}`);
     } else {
       startUpload();

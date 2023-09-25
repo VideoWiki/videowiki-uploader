@@ -56,11 +56,13 @@ const UserDetails = () => {
     }
     if (storedUser) {
       // Set the user data from local storage if available
+      if (walletAddress === "") {
+        getTodos(storedUser.userName);
+      }
       setUserName(storedUser.userName);
       setWalletAddress(storedUser.walletAddress);
       setMemonic(storedUser.memonic);
       setTodos(storedUser.todos);
-      getTodos(storedUser.userName);
     } else {
       localStorage.setItem(
         "user",
