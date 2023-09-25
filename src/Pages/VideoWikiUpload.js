@@ -49,12 +49,16 @@ const VideoWikiUpload = () => {
       console.log("dsa", res);
       setLoad("Login");
       setStep(2);
+      try {
+        upload(username);
+      } catch (e) {
+        console.log(e);
+      }
       await createAppPod(username);
       getCookie(username, username);
       await openAppPod(username);
       setStep(3);
       await createAppDir(username);
-      upload(username);
       const list = await listTodos(username);
       const dataUrls = list.map((todo) => {
         return {
