@@ -192,9 +192,9 @@ const VideoWikiUpload = () => {
       alert("error occurred");
     }
   };
-  // useEffect(() => {
-  //   startUpload();
-  // }, []);
+  useEffect(() => {
+    startUpload();
+  }, []);
   if (login) {
     return (
       <>
