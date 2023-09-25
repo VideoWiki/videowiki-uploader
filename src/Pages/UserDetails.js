@@ -244,16 +244,21 @@ const UserDetails = () => {
   };
   const upload = async () => {
     try {
-      setUploading(true);
       const resp = await urlUpload(userName, url);
       console.log("resp", resp);
       var info = resp.filedata;
       info = info.replace("{", "");
       info = info.replace("}", "");
-      info = info.replace("'", "");
+      info = info.replace(/'/g, "");
+      info = info.replace(/,/g, "");
+      info = info.replace(/ /g, "");
+      console.log(info.split("\n"));
       console.log("info", info, "this is the info");
+      // setUploading(true);
       setFileInfo(info);
-      checkStatus(resp.task_id);
+      setTimeout(() => {
+        checkStatus(resp.task_id);
+      }, 1000);
     } catch (e) {
       console.log("err", e);
     }
@@ -398,7 +403,13 @@ const UserDetails = () => {
           </div>
           <div className="file-info">
             {typeof fileInfo === "string" ? (
-              <pre>{fileInfo}</pre>
+              <>
+                <p>Name: {fileInfo.split("\n")[1].split("/").pop()}</p>
+                <p>Size in MB: {fileInfo.split("\n")[4].split(":").pop()}</p>
+                <p>
+                  totalAmountBZZ: {fileInfo.split("\n")[9].split(":").pop()}
+                </p>
+              </>
             ) : (
               Object.keys(fileInfo).length > 0 && (
                 <>
