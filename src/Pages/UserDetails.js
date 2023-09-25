@@ -60,7 +60,7 @@ const UserDetails = () => {
       setWalletAddress(storedUser.walletAddress);
       setMemonic(storedUser.memonic);
       setTodos(storedUser.todos);
-      // getTodos(storedUser.userName);
+      getTodos(storedUser.userName);
     } else {
       localStorage.setItem(
         "user",
