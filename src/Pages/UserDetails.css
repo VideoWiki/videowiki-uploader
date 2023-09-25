@@ -161,6 +161,8 @@
   color: gray;
   flex-direction: column;
   cursor: pointer;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
 }
 
 .file-select-box h3 {
