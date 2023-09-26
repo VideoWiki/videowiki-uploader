@@ -21,8 +21,8 @@ const alchemy = new Alchemy(settings);
 let fundWallet = new Wallet(PRIVATE_KEY);
 
 export const apiHost = () => {
-  // let url = process.env.REACT_APP_API_URL;
-  let url = "https://dev.cast.video.wiki";
+  let url = process.env.REACT_APP_API_URL;
+  // let url = "https://dev.cast.video.wiki";
   return url;
 };
 
@@ -38,15 +38,12 @@ console.log(`API Key: ${apiKey}`);
 export const registerAccount = async (username, password, mnemonic) => {
   const ENDPOINT = "/v2/user/signup";
   const FAIROS_HOST = apiHost();
-  console.log(FAIROS_HOST, "kkkk");
   let url = `${FAIROS_HOST}${ENDPOINT}`;
-  console.log(url, "urlssss");
   let data = {
     userName: username,
     password,
   };
   if (mnemonic) data.mnemonic = mnemonic;
-  console.log(data);
   // return new Promise(async (res, rej) => {
   let response = await fetch(url, {
     headers,
@@ -54,11 +51,9 @@ export const registerAccount = async (username, password, mnemonic) => {
     body: JSON.stringify(data),
   });
   let json = await response.json();
-  console.log("Address of new account", json.address);
   if (!mnemonic && response.status === 402) {
     await topUpAddress(json.address); //TODO
   }
-  console.log(response.status, "status");
   if (response.status === 402) {
     return { status: 402, mnemonic: json.mnemonic };
   } else {
@@ -86,7 +81,6 @@ export const createAppPod = async (userName) => {
 
   const ENDPOINT = "/v1/pod/new";
   const FAIROS_HOST = apiHost();
-  console.log(headers);
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers,
@@ -95,7 +89,6 @@ export const createAppPod = async (userName) => {
 
   let json = await response.json();
   if (response.ok) {
-    console.log({ response, json });
   } else {
     if (json.message === "jwt: invalid token") throw json;
     console.error({ response, json });
@@ -153,7 +146,6 @@ export const listTodos = async (userName) => {
     podName: userName,
     dirPath: "/" + userName,
   };
-  console.log(data, "data");
   let ENDPOINT = "/v1/dir/ls";
   const FAIROS_HOST = apiHost();
 
@@ -169,7 +161,6 @@ export const listTodos = async (userName) => {
     let json = await response.json();
 
     if (response.ok) {
-      console.log({ response, json }, "33336666");
       let res = await Promise.all(
         (json.files || []).map(async ({ name }) => {
           return await readTodo(name, userName);
@@ -210,10 +201,7 @@ export const readTodo = async (todofile, userName) => {
     }
   );
   let json = await response.blob();
-  console.warn("here3333344444");
   if (response.ok) {
-    console.log({ response, json });
-    console.warn("here triggered", response, json);
     let jsonResponse = {
       name: todofile,
       blob: json,
@@ -229,7 +217,6 @@ export async function topUpAddress(address) {
     fundWallet.address,
     "latest"
   );
-  console.log("Nonce", nonce);
   let transaction = {
     to: address,
     value: Utils.parseEther("0.05"),
@@ -252,7 +239,6 @@ export const loginAccount = async (userName, password) => {
     userName,
     password,
   };
-  console.log("ppppp", userName, password);
   let response = await fetch(FAIROS_HOST + ENDPOINT, {
     method: "POST",
     headers: {
@@ -261,9 +247,7 @@ export const loginAccount = async (userName, password) => {
     },
     body: JSON.stringify(data),
   });
-  console.log("llllll", response);
   let json = await response.json();
-  console.log("jjkkkk", json);
   headers.Authorization = `Bearer ${json.accessToken}`;
   if (response.ok) {
     localStorage.setItem("accessToken", json.accessToken);
@@ -289,9 +273,6 @@ export const loginAccount = async (userName, password) => {
 };
 
 export const addTodo = async (todos, userName, file) => {
-  console.log("aaaaaaaaa");
-  console.log(file.type);
-
   const blob = new Blob([file], {
     type: file.type,
   });
@@ -318,7 +299,6 @@ export const addTodo = async (todos, userName, file) => {
       type: file.type, // Add the type property
       dataURL: URL.createObjectURL(blob), // Set the 'dataURL' property
     };
-    console.log(jsonResponse, "0002222233333");
     todos.push(jsonResponse);
   } else {
     console.error({ response, json });
@@ -343,7 +323,6 @@ export const deleteTodo = async (deleteTodoName, todos, userName) => {
 
   const json = await response.json();
   if (response.ok) {
-    console.log({ response, json });
     return todos.filter((todo) => todo.name !== deleteTodoName);
   } else {
     console.error({ response, json });
@@ -506,7 +485,7 @@ export const urlUpload = async (username, file) => {
   };
 
   const upload = await fetch(
-    "https://api.storage.video.wiki/api/swarm/upload/",
+    staorageUrl+"/api/swarm/upload/",
     requestOptions
   );
 
@@ -518,7 +497,7 @@ export const urlUpload = async (username, file) => {
 export const uploadStatus = async (taskId) => {
   try {
     const status = await fetch(
-      "https://api.storage.video.wiki/api/swarm/upload/status/" + taskId
+      staorageUrl+"/api/swarm/upload/status/" + taskId
     );
     const json = await status.json();
     return json;
