@@ -3,11 +3,11 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "./Context/contexts";
 import "./UserDetails.css";
 import swarm from "../Assets/logo2.jpeg";
+import Upload from "../Assets/Upload.svg";
 import {
   addTodo,
   deleteTodo,
   downloadTodo,
-  initTodos,
   listTodos,
   uploadStatus,
   urlUpload,
@@ -15,13 +15,7 @@ import {
 import { calculateFileInfo } from "../PriceCalculator/calculateFileInfo";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-import { BiCloudUpload, BiCopy } from "react-icons/bi";
-
-const override = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "#7247C4",
-};
+import { BiCloudUpload, BiCopy, BiTrash } from "react-icons/bi";
 
 const UserDetails = () => {
   const {
@@ -35,7 +29,6 @@ const UserDetails = () => {
     setTodos,
   } = useContext(UserContext);
   const fileInputRef = useRef(null);
-  const box = useRef(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -48,6 +41,11 @@ const UserDetails = () => {
   const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    if (error !== "") setTimeout(() => setError(""), 2000);
+  }, [error]);
+
   useEffect(() => {
     // Load user data from local storage
     if (!localStorage.getItem("accessToken")) {
@@ -56,6 +54,7 @@ const UserDetails = () => {
     }
     if (storedUser) {
       // Set the user data from local storage if available
+      console.log("storedUser", storedUser);
       if (walletAddress === "") {
         getTodos(storedUser.userName);
       }
@@ -118,9 +117,6 @@ const UserDetails = () => {
     setIsFilesSelected(true);
     setSelectedFileName(files[0].name);
     setIsFile(true);
-    box.current.style.background = `url(${URL.createObjectURL(
-      event.target.files[0]
-    )})`;
 
     if (files.length > 0) {
       const file = files[0];
@@ -129,6 +125,7 @@ const UserDetails = () => {
         .then((info) => {
           console.log(info, "bruh this is the info");
           // You can access the calculated file information here.
+          console.log(4);
           setFileInfo(info);
         })
         .catch((error) => {
@@ -159,6 +156,7 @@ const UserDetails = () => {
     } catch (error) {
       console.error("Error uploading files:", error);
     } finally {
+      console.log(5);
       setUploading(false);
       setIsFile(false);
       setSelectedFiles([]);
@@ -216,36 +214,15 @@ const UserDetails = () => {
 
   const isValidURL = (url) => {
     // Regular expression to match a URL
-    var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+    var urlRegex = /^(https?:\/\/)?([\w.-]+)(\/[\w.-]*)*\/?$/;
     return urlRegex.test(url);
-  };
-  const getDetails = async () => {
-    if (!isValidURL(url)) {
-      alert("invalid url");
-      return;
-    }
-    const response = await fetch(url);
-    const type = response.headers.get("content-type");
-    const blob = await response.blob();
-    console.log();
-    // Create a File object from the blob
-    var name = url.split("/");
-    const file = new File([blob], name[name.length - 1], { type });
-    setSelectedFiles([file]);
-    const ttl = 31536000; // Replace this with your desired time to live value in seconds
-    calculateFileInfo(file, ttl)
-      .then((info) => {
-        console.log(info, "bruh this is the info");
-        // You can access the calculated file information here.
-        setFileInfo(info);
-      })
-      .catch((error) => {
-        console.error("Error calculating file info:", error);
-      });
-    setGetInfo(false);
   };
   const upload = async () => {
     try {
+      if (!isValidURL()) {
+        setError("Not a valid url");
+        return;
+      }
       const resp = await urlUpload(userName, url);
       console.log("resp", resp);
       var info = resp.filedata;
@@ -254,29 +231,30 @@ const UserDetails = () => {
       info = info.replace(/'/g, "");
       info = info.replace(/,/g, "");
       info = info.replace(/ /g, "");
-      console.log(info.split("\n"));
+
       console.log("info", info, "this is the info");
-      // setUploading(true);
       setFileInfo(info);
+
       setTimeout(() => {
-        checkStatus(resp.task_id);
+        checkStatus(resp.task_id, info.split("\n")[1].split("/").pop());
       }, 1000);
     } catch (e) {
       console.log("err", e);
     }
   };
 
-  const checkStatus = async (taskId) => {
+  const checkStatus = async (taskId, name) => {
+    console.log(name, "21");
     try {
       const res = await uploadStatus(taskId);
       console.log(res, "reso");
       if (res.status === "SUCCESS") {
         console.log("res");
+        console.log(name);
         const result = JSON.parse(res.result);
         console.log(result);
         if (result.Responses[0].message === "uploaded successfully") {
           var newTodos = todos;
-          const name = url.split("/");
           var type = url.split(".");
           console.log("type", type);
           switch (type[type.length - 1]) {
@@ -306,15 +284,17 @@ const UserDetails = () => {
               break;
           }
           var newTodo = {
-            name: name[name.length - 1],
+            name: name,
             dataURL: url,
             type: type, // Add the 'type' of the todo blob here
           };
           newTodos.push({ ...newTodo });
+          console.log(newTodos);
           setTodos(newTodos);
         } else {
           alert("error occur try again");
         }
+        console.log(1);
         setUploading(false);
         setIsFile(false);
         setSelectedFiles([]);
@@ -323,9 +303,10 @@ const UserDetails = () => {
         setTimeout(() => setFileInfo({}), 1000); // Clear the file information after upload
         setUrl("");
       } else {
-        setTimeout(() => checkStatus(taskId), 2000);
+        setTimeout(() => checkStatus(taskId, name), 2000);
       }
     } catch (e) {
+      console.log(2);
       setUploading(false);
       setIsFile(false);
       setSelectedFiles([]);
@@ -340,13 +321,12 @@ const UserDetails = () => {
   const handleUpload = () => {
     setError("");
     if (url.length > 0) {
-      console.log(1);
+      setError("");
       upload();
     } else if (selectedFiles.length > 0) {
-      console.log(2);
+      setError("");
       handleFileUpload();
     } else {
-      console.log(3);
       setError("Select a file first");
     }
   };
@@ -424,8 +404,8 @@ const UserDetails = () => {
             )}
           </div>
           <div className="file-upload">
-            <div className="file-select-box" ref={box} onClick={clickInput}>
-              <BiCloudUpload size={40} />
+            <div className="file-select-box" onClick={clickInput}>
+              <img src={Upload} alt="CloudUp" />
               <h3>Click to select file</h3>
             </div>
             <input
@@ -437,7 +417,7 @@ const UserDetails = () => {
               onChange={handleFileSelection}
             />
           </div>
-          <p class="hr-lines">or</p>
+          <p className="hr-lines">or</p>
           <div style={{ display: "flex" }}>
             <input
               value={url}
@@ -452,7 +432,7 @@ const UserDetails = () => {
           <p className="error">{error}</p>
           <button onClick={handleUpload} className="upload-button">
             <img src={swarm} alt="logo" />
-            <text>Upload to Swarm</text>
+            <span>Upload to Swarm</span>
           </button>
 
           <div className="user-todos-container">
@@ -498,7 +478,7 @@ const UserDetails = () => {
                                 className="delete-button"
                                 onClick={() => handleDeleteTodo(todo.name)}
                               >
-                                Delete
+                                <BiTrash />
                               </button>
                             </div>
                           </div>

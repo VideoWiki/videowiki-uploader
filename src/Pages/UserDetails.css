@@ -154,19 +154,19 @@
   width: 100%;
   border: 1px dashed purple;
   border-radius: 10px;
-  height: 10rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: gray;
-  flex-direction: column;
+  height: 4rem;
   cursor: pointer;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  color: #7A5FEC;
+  background: #7a5fec30;
+  padding: 0 20px;
 }
 
 .file-select-box h3 {
-  margin: 0;
+  margin: 10px;
 }
 
 .button {
@@ -179,6 +179,7 @@
 }
 
 .file-info p {
+  font-size: 14px;
   width: 33%;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -192,14 +193,17 @@
   padding: 10px 20px;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   border: 1px solid #bebebe;
-  background-color: #fff;
-  border-radius: 15px;
+  background-color: #7966FA;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   display: flex;
   filter: brightness(1.1);
   transition: filter 0.3s ease;
-  margin: 10px auto;
+  margin: 30px auto;
+  align-items: center;
+  color: #fff;
+  width: 50%;
 }
 
 .upload-button:hover::before {
@@ -221,9 +225,9 @@
   margin: auto;
 }
 
-.upload-button>text {
+.upload-button>span {
   margin: auto;
-  margin-left: 5px;
+  margin-left: 10px;
   align-self: center;
 }
 
@@ -287,31 +291,37 @@
 }
 
 .todo-actions button.delete-button {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: transparent;
+  color: #828282;
   border: none;
+  font-size: 26px;
+  border: 1px solid #828282;
+  border-radius: 8px;
+  display: flex;
+  padding: 5px;
 }
 
 .todo-actions button.delete-button:hover {
-  background-color: #c82333;
+  color: #c82333;
 }
 
 .todo-actions button.delete-button:active {
-  background-color: #b21f2d;
+  color: #b21f2d;
 }
 
 .todo-actions button.download-button {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #7a66fa31;
+  color: #7966FA;
   border: none;
+  border-radius: 8px;
 }
 
 .todo-actions button.download-button:hover {
-  background-color: #0056b3;
+  background-color: #7a66fa52;
 }
 
 .todo-actions button.download-button:active {
-  background-color: #003f81;
+  background-color: #7a66faad;
 }
 
 .center {

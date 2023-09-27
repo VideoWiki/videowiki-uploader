@@ -179,6 +179,43 @@ export const listTodos = async (userName) => {
   }
 };
 
+export const onlyListTodos = async (userName) => {
+  let headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  };
+
+  let data = {
+    podName: userName,
+    dirPath: "/" + userName,
+  };
+  let ENDPOINT = "/v1/dir/ls";
+  const FAIROS_HOST = apiHost();
+
+  try {
+    let response = await fetch(
+      FAIROS_HOST + ENDPOINT + "?" + new URLSearchParams(data),
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
+    let json = await response.json();
+
+    if (response.ok) {
+      return json;
+    } else {
+      if (json.message === "jwt: invalid token") {
+        return { message: "expired" };
+      }
+      console.error({ response, json });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 export const readTodo = async (todofile, userName) => {
   let headers = {
     "Content-Type": "application/json",
@@ -189,7 +226,6 @@ export const readTodo = async (todofile, userName) => {
     podName: userName,
     filePath: "/" + userName + "/" + todofile,
   };
-  console.warn(data, "here33333");
   let FAIROS_HOST = apiHost();
   let ENDPOINT = "/v1/file/download";
 
@@ -485,7 +521,7 @@ export const urlUpload = async (username, file) => {
   };
 
   const upload = await fetch(
-    staorageUrl+"/api/swarm/upload/",
+    staorageUrl + "/api/swarm/upload/",
     requestOptions
   );
 
@@ -497,7 +533,7 @@ export const urlUpload = async (username, file) => {
 export const uploadStatus = async (taskId) => {
   try {
     const status = await fetch(
-      staorageUrl+"/api/swarm/upload/status/" + taskId
+      staorageUrl + "/api/swarm/upload/status/" + taskId
     );
     const json = await status.json();
     return json;
@@ -511,7 +547,7 @@ export const checkLogin = async () => {
     method: "GET",
     headers,
   };
-  const res = await fetch("https://dev.cast.video.wiki/v1/pod/ls", options);
+  const res = await fetch(apiHost() + "/v1/pod/ls", options);
   console.log(res.status);
   return res.status === 200;
 };
