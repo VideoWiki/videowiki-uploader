@@ -28,10 +28,10 @@ const AutoLogin = () => {
     try {
       const username = await getUsername(searchParams.get("id"));
       if (username.login) {
-        Login(username.random_string.toLowerCase());
+        SignIn(searchParams.get("id"), undefined);
         return;
       }
-      SignIn(username.random_string.toLowerCase(), undefined);
+      SignIn(searchParams.get("id"), undefined);
     } catch (e) {
       console.log("no username");
     }
@@ -71,7 +71,11 @@ const AutoLogin = () => {
     setLoad("SignIn"); // Show the loader
     setStep(1);
     try {
-      const res = await registerAccount(username, username, mnemonic);
+      const res = await registerAccount(
+        username,
+        "qwertyuiopasdfghjkl",
+        mnemonic
+      );
       console.log(res, "res");
       if (res.status === 500) {
         throw res;
@@ -80,18 +84,25 @@ const AutoLogin = () => {
         setTimeout(() => SignIn(username, res.mnemonic), 4000);
         return;
       }
-      await loginAccount(username, username);
+      await loginAccount(username, "qwertyuiopasdfghjkl");
       setStep(2);
       await createAppPod(username);
-      getCookie(username, username);
-      setStep(3);
+      getCookie(username, "qwertyuiopasdfghjkl");
       await openAppPod(username);
-      setStep(4);
       await createAppDir(username);
+      setStep(3);
+      const list = await listTodos(username);
+      const dataUrls = list.map((todo) => {
+        return {
+          name: todo.name,
+          dataURL: URL.createObjectURL(todo.blob),
+          type: todo.blob.type, // Add the 'type' of the todo blob here
+        };
+      });
       setMemonic(mnemonic);
       setUserName(username);
       setWalletAddress(res.address);
-      setTodos([]);
+      setTodos(dataUrls);
       setLoad(false);
       navigate(`/upload/${url}`);
     } catch (error) {
@@ -140,14 +151,13 @@ const AutoLogin = () => {
     return (
       <>
         <Loader
-          heading="Signing Up"
+          heading="Setting Up"
           steps={[
             { title: "Signing In", success: "Sign in successfully" },
-            { title: "Creating Pod", success: "Pod created successfully" },
             { title: "Opening Pod", success: "Pod open successfully" },
             {
-              title: "Creating Directory",
-              success: "Directory created successfully",
+              title: "Loading Files",
+              success: "Files Load successfully",
             },
           ]}
         />
