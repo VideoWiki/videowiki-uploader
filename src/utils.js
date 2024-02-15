@@ -9,7 +9,7 @@ const headers = {
 };
 
 // const { API_KEY, PRIVATE_KEY } = process.env;
-const API_KEY = "8OvbHJsV8ry1tnkNki_RfQ9836-5zhKn";
+const API_KEY = "xb7HPPhwXxM8Ih2EjtDVeu87Vl6rBHes";
 const PRIVATE_KEY =
   "6179993d608b4a4a5acfa019e1624b3a0a12337884865c3c633d2d682b134faf";
 const settings = {
